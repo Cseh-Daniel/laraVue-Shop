@@ -1,5 +1,19 @@
 <script setup>
 import { useForm, usePage } from '@inertiajs/vue3';
+import { ref } from 'vue';
+defineProps({
+    product: {
+        type: Object
+    }
+})
+
+let title = '';
+
+if (product) {
+    title = ref("Edit product");
+} else {
+    title = ref("Create new product");
+}
 
 let form = useForm({
     name: '',
@@ -10,7 +24,11 @@ let form = useForm({
 
 function submit() {
     //console.log(errors.name)
-    form.post("/new-product")
+    if (product) {
+        form.post("/edit-product/" + id);
+    } else {
+        form.post("/new-product");
+    }
 };
 
 function onFileChange(e) {

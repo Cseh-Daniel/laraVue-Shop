@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -54,8 +55,15 @@ class ProductController extends Controller
      */
     public function edit(string $id)
     {
-
-        return inertia(dd($id));
+        //return inertia(dd(User::find($id)));
+        //return inertia('Products/Create',["product"=>Product::find($id)]);
+        return dd(Product::find($id)->through(
+            fn($product)=>[
+                'name'=>$product->name,
+                'price'=>$product->price,
+                'picPath'=>$product->picPath
+            ]
+        ));
     }
 
     /**
