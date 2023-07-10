@@ -32,7 +32,11 @@
             </div>
         </div>
 
-        <button class="btn btn-primary" type="submit" :disabled="form.processing">Save</button>
+<div class="d-flex gap-3 align-items-center">
+            <button class="btn btn-primary" type="submit" :disabled="form.processing">Register</button>
+            Already have an account?<Link href="/login" as="a">Login</Link>
+</div>
+
     </form>
 </template>
 
@@ -47,8 +51,7 @@ let form = useForm({
 
 
 function submit() {
-    console.log("alma");
-    form.post('/users');
+    form.post('/register');
 }
 
 </script>

@@ -1,5 +1,5 @@
 <script setup>
-import { useForm } from '@inertiajs/vue3';
+import { useForm,Link } from '@inertiajs/vue3';
 
 
 let form = useForm({
@@ -46,8 +46,12 @@ export default {
 
                 </div>
 
-                <button class="btn btn-primary" type="submit">Login</button>
+                <div class="d-flex gap-3 align-items-center">
+                    <button class="btn btn-primary" type="submit">Login</button>
+                    <Link href="/register" as="a">Don't have an account?</Link>
+                </div>
             </form>
+
         </div>
 
 </template>

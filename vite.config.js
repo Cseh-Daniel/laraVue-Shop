@@ -16,7 +16,8 @@ export default defineConfig({
     ],
     resolve:{
         alias:{
-            '@shared': fileURLToPath(new URL('./resources/js/Shared',import.meta.url))
+            '@shared': fileURLToPath(new URL('./resources/js/Shared',import.meta.url)),
+            '@fontawesome': fileURLToPath(new URL('./node_modules/@fortawesome/fontawesome-free',import.meta.url))
         }
     }
 });

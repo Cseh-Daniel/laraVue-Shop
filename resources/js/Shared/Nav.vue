@@ -28,8 +28,16 @@ defineProps({
 
             </div>
             <div>
-               Welcome,Teszt
-               <Link href="/logout" method="post" as="link">Logout</Link>
+                <span class="d-flex gap-2" v-if="usePage().props.auth.user">
+                    Welcome, {{ usePage().props.auth.user.username }}
+                    <h6>
+                        <Link href="/logout" method="post" class="badge bg-secondary mt-1" as="span">Logout</Link>
+                    </h6>
+                </span>
+                <span class="d-flex gap-2" v-else>
+                    <Link href="/login" as="button" class="btn btn-primary">Login</Link>
+                    <Link href="/register" as="button" class="btn btn-secondary">Register</Link>
+                </span>
             </div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
