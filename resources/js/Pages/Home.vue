@@ -5,14 +5,7 @@ import ProductList from './Products/productList.vue';
 
 
 import { Link, usePage } from '@inertiajs/vue3';
-/* import the fontawesome core */
-import { library } from '@fortawesome/fontawesome-svg-core'
-/* import font awesome icon component */
-import { faImage } from '@fortawesome/free-solid-svg-icons'
 
-
-
-library.add(faImage);
 
 let auth = ref(usePage().props.auth.user ? true : false);
 

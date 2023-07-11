@@ -1,42 +1,48 @@
 <script setup>
 
+import ProductCard from "./ProductCard.vue"
+
 let props = defineProps({
     colNumber:{
         type:Number,
-        default:3
+        default:2
     },
     items:Array
 })
 
 let arr = ['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'];
 
-let gr = [];
+let grid = [];
 
 let j = -1;
 
 for (let i = 0; i < arr.length; i++) {
     if (i % props.colNumber == 0) {
         j++;
-        gr[j] = [];
+        grid[j] = [];
     }
-    gr[j].push(arr[i]);
+    grid[j].push(arr[i]);
 }
 
-let header = `<h1>alma</h1>`;
-
-let cell = `    <div class="card">
-                    <div class="card-body">
-                        <h2>alma</h2>
-                    </div>
-                </div>`;
 </script>
 
 <template>
     <div class="container text-center">
 
-        <div v-for="i in gr" :key="i" class="row my-3">
+        <div v-for="(i,index) in grid" :key="i" class="row my-3">
 
-            <div class="col" v-for="j in i" :key="j" v-html="cell">
+            <div class="col" v-for="(j,jndex) in i" :key="j">
+
+                <ProductCard>
+                    <template #title>{{ j }}</template>
+                    <template #price>{{ index+""+jndex }}.-</template>
+                    <template #buttons>
+                        <button class="btn btn-primary"> btn A</button>
+                        <button class="btn btn-primary"> btn B</button>
+                    </template>
+
+                </ProductCard>
+
             </div>
 
         </div>
