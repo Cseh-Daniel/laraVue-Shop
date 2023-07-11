@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
 
          $products=[
             'name'=>'',
-            'picPath'=>'',
+            'file_path'=>'',
             'price'=>0
          ];
          for ($i=0; $i < 10; $i++) {

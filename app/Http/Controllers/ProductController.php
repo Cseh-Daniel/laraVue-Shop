@@ -31,7 +31,7 @@ class ProductController extends Controller
     {
         $req = $request->validate([
             'name' => ['required', 'string'],
-            'picPath' => ['string', 'nullable'],
+            'file_path' => ['string', 'nullable'],
             'price' => ['required', 'integer']
         ]);
 
@@ -77,7 +77,7 @@ class ProductController extends Controller
     {
         $req = $request->validate([
             'name' => ['required', 'string'],
-            'picPath' => ['string', 'nullable'],
+            'file_path' => ['string', 'nullable'],
             'price' => ['required', 'integer']
         ]);
 

@@ -18,14 +18,14 @@ const props = defineProps({
 
 let form = useForm({
     name: '',
-    picPath: '',
+    file_path: '',
     price: ''
 })
 
 if(props.product){
     form.name = props.product.name;
     form.price = props.product.price;
-    form.picPath = props.product.picPath;
+    form.file_path = props.product.file_path;
 }
 
 function submit() {
@@ -47,13 +47,13 @@ function onFileChange(e) {
 function createImage(file) {
 
     //var image = new Image();
-    form.picPath = new Image();
+    form.file_path = new Image();
     var reader = new FileReader();
     var vm = this;
 
     reader.onload = (e) => {
         // vm.image = e.target.result;
-        vm.picPath = e.target.result;
+        vm.file_path = e.target.result;
 
     };
     reader.readAsDataURL(file);
@@ -83,10 +83,10 @@ function createImage(file) {
                 </div>
 
                 <div class="mb-3">
-                    <label for="picPath" class="form-label">Product image</label>
-                    <input @change="onFileChange" type="file" name="picPath" id="picPath" class="form-control">
-                    <div v-if="form.errors.picPath" class="bg-danger-subtle rounded p-1 w-50 text-center m-2">
-                        {{ form.errors.picPath }}
+                    <label for="file_path" class="form-label">Product image</label>
+                    <input @change="onFileChange" type="file" name="file_path" id="file_path" class="form-control">
+                    <div v-if="form.errors.file_path" class="bg-danger-subtle rounded p-1 w-50 text-center m-2">
+                        {{ form.errors.file_path }}
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Save</button>

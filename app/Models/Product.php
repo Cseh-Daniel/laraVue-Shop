@@ -11,7 +11,7 @@ class Product extends Model
     protected $fillable = [
         'name',
         'price',
-        'picPath',
+        'file_path',
     ];
 
     public $timestamps = false; //updated_at és created_at átugrása Product::create() használatakor
