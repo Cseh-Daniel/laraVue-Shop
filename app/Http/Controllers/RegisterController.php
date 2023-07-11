@@ -33,6 +33,6 @@ class RegisterController extends Controller
 
         User::create($req);
 
-        return redirect("/");
+        return redirect("/login");
     }
 }

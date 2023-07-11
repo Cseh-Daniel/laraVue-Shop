@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\User;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -14,7 +13,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return inertia('Home',['products'=>Product::all()]);
+        return inertia('Home', ['products' => Product::all()]);
     }
 
     /**
@@ -30,10 +29,10 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $req=$request->validate([
-            'name'=>['required','string'],
-            'picPath'=>['string','nullable'],
-            'price'=>['required','integer']
+        $req = $request->validate([
+            'name' => ['required', 'string'],
+            'picPath' => ['string', 'nullable'],
+            'price' => ['required', 'integer']
         ]);
 
         Product::create($req);
@@ -57,13 +56,18 @@ class ProductController extends Controller
     {
         //return inertia(dd(User::find($id)));
         //return inertia('Products/Create',["product"=>Product::find($id)]);
-        return dd(Product::find($id)->through(
-            fn($product)=>[
-                'name'=>$product->name,
-                'price'=>$product->price,
-                'picPath'=>$product->picPath
-            ]
-        ));
+
+        $product=Product::find($id);
+
+            //dd($product['name']);
+
+        return inertia("Products/Create", [
+            "title" => "Edit Product",
+            "product" => $product
+        ]);
+
+        //return inertia('Products/Create',['test'=>'asdf']);
+
     }
 
     /**
@@ -71,7 +75,16 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $req = $request->validate([
+            'name' => ['required', 'string'],
+            'picPath' => ['string', 'nullable'],
+            'price' => ['required', 'integer']
+        ]);
+
+        Product::where('id',$id)->update($req);
+
+        //return inertia(dd($req));
+        return redirect("/");
     }
 
     /**
@@ -79,6 +92,6 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Product::destroy($id);
     }
 }

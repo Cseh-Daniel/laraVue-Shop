@@ -1,19 +1,20 @@
 <script setup>
 import { useForm, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
-defineProps({
+
+const props = defineProps({
+    title:{
+        type:String,
+        default:"Create new product"
+    },
     product: {
-        type: Object
-    }
-})
+        type: Object,
+    },
+});
 
-let title = '';
 
-if (product) {
-    title = ref("Edit product");
-} else {
-    title = ref("Create new product");
-}
+
+
 
 let form = useForm({
     name: '',
@@ -21,11 +22,16 @@ let form = useForm({
     price: ''
 })
 
+if(props.product){
+    form.name = props.product.name;
+    form.price = props.product.price;
+    form.picPath = props.product.picPath;
+}
 
 function submit() {
     //console.log(errors.name)
-    if (product) {
-        form.post("/edit-product/" + id);
+    if (props.product) {
+        form.post("/edit-product/" + props.product.id);
     } else {
         form.post("/new-product");
     }
@@ -57,7 +63,7 @@ function createImage(file) {
 
 <template>
     <div class="card mx-auto shadow-sm px-5 py-4">
-        <h1>Create new product</h1>
+        <h1>{{ props.title }}</h1>
         <div class="card-body p-4">
             <form @submit.prevent="submit">
                 <div class="mb-3">
@@ -83,7 +89,7 @@ function createImage(file) {
                         {{ form.errors.picPath }}
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Create</button>
+                <button type="submit" class="btn btn-primary">Save</button>
             </form>
         </div>
     </div>

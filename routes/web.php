@@ -21,9 +21,6 @@ Route::redirect('/', "/home");
 
 Route::get('/home', [ProductController::class, 'index'])->name("home");
 
-
-
-
 Route::middleware("guest")->group(
     function () {
         Route::get("/login", [LoginController::class, 'create'])->name("login");
@@ -40,6 +37,11 @@ Route::middleware("auth")->group(
         Route::post('/new-product',[ProductController::class,'store']);
 
         Route::get('/edit-product/{id}',[ProductController::class,'edit']);
+        Route::post('/edit-product/{id}',[ProductController::class,'update']);
+
+        Route::post('/delete-product/{id}',[ProductController::class,'destroy']);
+
+
 
         Route::post('/logout', [LoginController::class, 'destroy']);
     }

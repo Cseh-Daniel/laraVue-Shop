@@ -27,7 +27,7 @@ defineProps({
                         <th></th>
                         <th>Name</th>
                         <th>Price</th>
-                        <th colspan="2" ></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody v-if="usePage().props.products">
@@ -38,9 +38,9 @@ defineProps({
                         <td>{{ product.name }}</td>
                         <td>{{ product.price }} .-</td>
                         <td>
-                            <div class="d-flex gap-3">
+                            <div class="d-flex gap-3 justify-content-center">
                                 <Link :href="'/edit-product/'+product.id" as="button" class="btn btn-outline-warning">Edit</Link>
-                                <Link :href="'/delete-product/'+product.id" as="button" class="btn btn-outline-danger">remove</Link>
+                                <Link :href="'/delete-product/'+product.id" as="button" class="btn btn-outline-danger" method="post" preserve-scroll>remove</Link>
                             </div>
                         </td>
 
