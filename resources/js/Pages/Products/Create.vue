@@ -1,11 +1,10 @@
 <script setup>
-import { useForm, usePage } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
-    title:{
-        type:String,
-        default:"Create new product"
+    title: {
+        type: String,
+        default: "Create new product"
     },
     product: {
         type: Object,
@@ -22,42 +21,19 @@ let form = useForm({
     price: ''
 })
 
-if(props.product){
+if (props.product) {
     form.name = props.product.name;
     form.price = props.product.price;
     form.file_path = props.product.file_path;
 }
 
 function submit() {
-    //console.log(errors.name)
     if (props.product) {
         form.post("/edit-product/" + props.product.id);
     } else {
         form.post("/new-product");
     }
 };
-
-function onFileChange(e) {
-    var files = e.target.files || e.dataTransfer.files;
-    if (!files.length)
-        return;
-    createImage(files[0]);
-}
-
-function createImage(file) {
-
-    //var image = new Image();
-    form.file_path = new Image();
-    var reader = new FileReader();
-    var vm = this;
-
-    reader.onload = (e) => {
-        // vm.image = e.target.result;
-        vm.file_path = e.target.result;
-
-    };
-    reader.readAsDataURL(file);
-}
 
 </script>
 
@@ -84,7 +60,11 @@ function createImage(file) {
 
                 <div class="mb-3">
                     <label for="file_path" class="form-label">Product image</label>
-                    <input @change="onFileChange" type="file" name="file_path" id="file_path" class="form-control">
+                    <input @input="form.file_path = $event.target.files[0]" type="file" name="file_path" id="file_path"
+                        class="form-control">
+                    <progress v-if="form.progress" :value="form.progress.percentage" max="100">
+                        {{ form.progress.percentage }}%
+                    </progress>
                     <div v-if="form.errors.file_path" class="bg-danger-subtle rounded p-1 w-50 text-center m-2">
                         {{ form.errors.file_path }}
                     </div>

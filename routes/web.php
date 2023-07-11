@@ -33,13 +33,13 @@ Route::middleware("guest")->group(
 
 Route::middleware("auth")->group(
     function () {
-        Route::get('/new-product',[ProductController::class,'create']);
-        Route::post('/new-product',[ProductController::class,'store']);
+        Route::get('/new-product', [ProductController::class, 'create']);
+        Route::post('/new-product', [ProductController::class, 'store']);
 
-        Route::get('/edit-product/{id}',[ProductController::class,'edit']);
-        Route::post('/edit-product/{id}',[ProductController::class,'update']);
+        Route::get('/edit-product/{id}', [ProductController::class, 'edit']);
+        Route::post('/edit-product/{id}', [ProductController::class, 'update']);
 
-        Route::post('/delete-product/{id}',[ProductController::class,'destroy']);
+        Route::post('/delete-product/{id}', [ProductController::class, 'destroy']);
 
 
 

@@ -1,21 +1,30 @@
 <template>
     <ul class="list-group list-group-horizontal-sm">
 
-        <Link class="text-decoration-none" v-for="link in links" :href="link.url">
-        <li class="list-group-item" v-html="link.label" :class="{'fw-bold text-decoration-underline':link.active}"/>
-        </Link>
+
+
+        <span v-for="link in links">
+            <Link class="text-decoration-none" v-if="link.url != 'null'" :href="link.url">
+            <li class="list-group-item" v-html="link.label" :class="{ 'fw-bold text-decoration-underline': link.active }" />
+            </Link>
+            <li v-else class="list-group-item" v-html="link.label"
+                :class="{ 'fw-bold text-decoration-underline': link.active }" />
+
+        </span>
 
     </ul>
 </template>
 
 <script setup>
 
-let props=defineProps({
+let props = defineProps({
+    links: Array
+});
 
-    links:Array
+props.links.forEach(element => {
+    if (!element.url) {
+        element.url = "null";
+    }
+});
 
-
-})
-
-// console.log(props.links)
 </script>

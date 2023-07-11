@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -13,7 +15,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return inertia('Home', ['products' => Product::all()]);
+
+        //dd(Product::paginate(3));
+        return inertia('Home', ['products' => Product::Paginate(3)]);
     }
 
     /**
@@ -31,13 +35,22 @@ class ProductController extends Controller
     {
         $req = $request->validate([
             'name' => ['required', 'string'],
-            'file_path' => ['string', 'nullable'],
+            'file_path' => ['file', 'nullable', 'image', 'max:10240'],
             'price' => ['required', 'integer']
         ]);
 
-        Product::create($req);
+        $file = $request->file('file_path');
+        $fileName = $req['name'];
+        $fileName = str_replace(" ", "_", $fileName);
+        $fileName = $fileName . '.' . $file->getClientOriginalExtension();
 
-        //return inertia(dd($req));
+        //dd($fileName);
+
+        $req['file_path'] = 'uploads/prod/' . $fileName;
+        // dd($req['file_path'],$req['name'],$req['price']);
+
+        Product::create($req);
+        $file->move('uploads/prod', $fileName);
         return redirect("/");
     }
 
@@ -57,9 +70,9 @@ class ProductController extends Controller
         //return inertia(dd(User::find($id)));
         //return inertia('Products/Create',["product"=>Product::find($id)]);
 
-        $product=Product::find($id);
+        $product = Product::find($id);
 
-            //dd($product['name']);
+        //dd($product['name']);
 
         return inertia("Products/Create", [
             "title" => "Edit Product",
@@ -77,13 +90,19 @@ class ProductController extends Controller
     {
         $req = $request->validate([
             'name' => ['required', 'string'],
-            'file_path' => ['string', 'nullable'],
+            'file_path' => ['file', 'image', 'max:10240'],
             'price' => ['required', 'integer']
         ]);
 
-        Product::where('id',$id)->update($req);
+        $file = $request->file('file_path');
+        $fileName = $req['name'];
+        $fileName = str_replace(" ", "_", $fileName);
+        $fileName = $fileName . '.' . $file->getClientOriginalExtension();
 
-        //return inertia(dd($req));
+        $req['file_path'] = 'uploads/prod/' . $fileName;
+        Product::where('id', $id)->update($req);
+        $file->move('uploads/prod', $fileName);
+
         return redirect("/");
     }
 
@@ -92,6 +111,11 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        Product::destroy($id);
+
+        $p = Product::find($id);
+
+        if (Product::destroy($id) && $p['file_path']) {
+            $file = File::delete($p['file_path']);
+        }
     }
 }

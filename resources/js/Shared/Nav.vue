@@ -31,7 +31,11 @@ defineProps({
                 <span class="d-flex gap-2" v-if="usePage().props.auth.user">
                     Welcome, {{ usePage().props.auth.user.username }}
                     <h6>
-                        <Link href="/logout" method="post" class="badge bg-secondary mt-1" as="span">Logout</Link>
+                        <form action="/logout" method="post">
+                            <Link href="/logout" method="post" class="badge bg-secondary mt-1" as="span">Logout</Link>
+                        </form>
+
+
                     </h6>
                 </span>
                 <span class="d-flex gap-2" v-else>
