@@ -14,7 +14,7 @@ let auth = ref(usePage().props.auth.user ? true : false);
 <template>
     <h1>Home</h1>
 
-    <ProductList></ProductList>
+    <ProductList :items="usePage().props.products.data"></ProductList>
 
     <div @logout="auth = false" class="card">
         <div class="card-body">

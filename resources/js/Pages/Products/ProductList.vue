@@ -10,13 +10,13 @@ let props = defineProps({
     items:Array
 })
 
-let arr = ['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'];
+let arr = ['a','a','a','a','a','a','a','a','a','a','a','a','a','a','a','a','a','a'];
 
 let grid = [];
 
 let j = -1;
 
-for (let i = 0; i < arr.length; i++) {
+for (let i = 0; i < props.items.length; i++) {
     if (i % props.colNumber == 0) {
         j++;
         grid[j] = [];
@@ -33,7 +33,7 @@ for (let i = 0; i < arr.length; i++) {
 
             <div class="col" v-for="(j,jndex) in i" :key="j">
 
-                <ProductCard>
+                <ProductCard img-src="uploads/prod/Teszt_Termék2.jpg">
                     <template #title>{{ j }}</template>
                     <template #price>{{ index+""+jndex }}.-</template>
                     <template #buttons>

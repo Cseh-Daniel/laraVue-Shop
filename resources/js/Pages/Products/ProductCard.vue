@@ -16,7 +16,7 @@ let props = defineProps({
 <template>
     <div class="card shadow-sm">
         <div class="card-body">
-            <img v-if="props.imgSrc" :src="imgSrc">
+            <img v-if="props.imgSrc" :src="imgSrc" class="w-25">
             <font-awesome-icon icon="image" class="fa-2xl" v-else />
             <h3>
                 <slot name="title"></slot>
