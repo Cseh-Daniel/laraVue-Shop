@@ -1,62 +1,69 @@
 <script setup>
-import { ref } from "vue";
+import { ref, reactive, watch, onMounted } from "vue";
 import Pagination from '@shared/Paginaton.vue';
 import ProductList from './Products/productList.vue';
+import { Link, usePage, router } from '@inertiajs/vue3';
+import debounce from "lodash/debounce";
 
+/**
+ *
+ * a kártyákat Bootstrap grid-esre átalakítani
+ *
+ */
 
-import { Link, usePage } from '@inertiajs/vue3';
+//https://www.youtube.com/watch?v=-jnCgrR_yKg
+//https://www.youtube.com/watch?v=Wqu-d_b3K-0
 
+let props = defineProps({
+    filters: {
+        type: Object,
+        default: {
+            name: '',
+            price: ''
+        }
+    },
+    products:Object
+})
 
 let auth = ref(usePage().props.auth.user ? true : false);
+
+let products = reactive(props.products.data);
+
+let search = reactive(props.filters);
+watch(() => search.name,
+    debounce(
+        (value) => {
+            router.get('/home', { name: value }, { replace: true, preserveState: true });
+        }, 500));
+
+watch(() => search.price,
+    debounce(
+        (value) => {
+            router.get('/home', { price: value }, { replace: true, preserveState: true });
+        }, 500));
+
+onMounted(() => { console.log('mounted home'); })
 
 </script>
 
 <template>
     <h1>Home</h1>
 
-    <ProductList :items="usePage().props.products.data"></ProductList>
-
-    <div @logout="auth = false" class="card">
-        <div class="card-body">
-
-            <Link v-if="auth" href="/new-product" class="btn btn-outline-primary" as="button">New Product</Link>
-
-            <table class="table w-75 mx-auto text-center align-middle">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Name</th>
-                        <th>Price</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody v-if="usePage().props.products">
-                    <tr v-for="product in usePage().props.products.data" :key="product.id">
 
 
-                        <td class="w-25">
-                            <img class="img-fluid" v-if="product.file_path" :src="product.file_path">
-                            <font-awesome-icon icon="image" v-else />
-                        </td>
+    <div>
 
-                        <td>{{ product.name }}</td>
-                        <td>{{ product.price }}&nbsp;.-</td>
-                        <td>
-                            <div v-if="auth" class="d-flex gap-3 justify-content-center">
-                                <Link :href="'/edit-product/' + product.id" as="button" class="btn btn-outline-warning">Edit
-                                </Link>
-                                <Link :href="'/delete-product/' + product.id" as="button" class="btn btn-outline-danger"
-                                    method="post" preserve-scroll>remove</Link>
-                            </div>
-                        </td>
+        <div class="d-flex gap-3 mb-4 justify-content-center">
+            <input type="text" class="form-control w-25" v-model="search.name" placeholder="search for Name">
+            <input type="number" class="form-control w-25" v-model="search.price" placeholder="search for Price">
+        </div>
 
-                    </tr>
-                </tbody>
-            </table>
+        <Link v-if="auth" href="/new-product" class="btn btn-outline-primary" as="button">New Product</Link>
+        <!-- <ProductList :items="products" :col-number=2></ProductList> -->
+        <ProductList @nameSearch="console.log('keresés')" v-model="products" :col-number=2 :key="search"></ProductList>
 
-            <div class="d-flex justify-content-center align-items-center">
-                <Pagination :links="usePage().props.products.links"></Pagination>
-            </div>
+        <div class="d-flex justify-content-center align-items-center">
+            <Pagination :links="usePage().props.products.links"></Pagination>
         </div>
     </div>
 </template>

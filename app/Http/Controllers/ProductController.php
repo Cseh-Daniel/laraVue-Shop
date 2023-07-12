@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -13,11 +14,27 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $req)
     {
 
-        //dd(Product::paginate(3));
-        return inertia('Home', ['products' => Product::Paginate(3)]);
+        if ($req->has('name')) {
+            //dd($req['name']);
+            return inertia('Home',
+            ['products'=>Product::query()->when(
+                $req['name'],function($query,$name){
+                    $query->where('name','like','%'.$name.'%');
+                })
+                ->paginate(4)
+                ->withQueryString()
+            ]);
+        }
+
+        if ($req->has('price')) {
+            dd($req['price']);
+        }
+
+
+        return inertia('Home', ['products' => Product::Paginate(4)]);
     }
 
     /**
@@ -35,7 +52,7 @@ class ProductController extends Controller
     {
         $req = $request->validate([
             'name' => ['required', 'string'],
-            'file_path' => ['file', 'nullable', 'image', 'max:10240'],
+            'file_path' => ['required', 'file', 'image', 'max:10240'],
             'price' => ['required', 'integer']
         ]);
 
@@ -109,13 +126,13 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
-
         $p = Product::find($id);
 
         if (Product::destroy($id) && $p['file_path']) {
             $file = File::delete($p['file_path']);
         }
+        return Inertia::location(url()->previous());
     }
 }

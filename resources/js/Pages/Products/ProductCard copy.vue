@@ -10,8 +10,8 @@ let props = defineProps({
         type: String,
         default: null
     },
-    edit: Boolean,
-    product: Object
+    edit:Boolean,
+    product:Object
 })
 </script>
 
@@ -19,33 +19,25 @@ let props = defineProps({
     <div class="container text-center shadow border rounded-4 p-4 mb-3">
 
         <div class="row justify-content-center w-auto">
-            <img v-if="product.file_path" :src="product.file_path" class=" w-img">
+            <img v-if="props.imgSrc" :src="imgSrc" class=" w-img">
             <font-awesome-icon icon="image" class="fa-2xl w-img  w-75" v-else />
         </div>
 
 
         <div class="row justify-content-center w-auto">
             <h3>
-                {{ product.name }}
+                <slot name="title"></slot>
             </h3>
         </div>
 
         <div class="row justify-content-center w-auto">
             <h5>
-                {{ product.price }}.-
+                <slot name="price"></slot>
             </h5>
 
         </div>
-
-        <div class="d-flex gap-3 justify-content-center">
-            <Link as="button" class="btn btn-outline-primary">Kosár</Link>
-            <div v-if="props.edit" class="d-flex gap-3 justify-content-center">
-                <Link :href="'/edit-product/' + product.id" as="button" class="btn btn-outline-warning">
-                Edit
-                </Link>
-                <Link :href="'/delete-product/' + product.id" as="button" class="btn btn-outline-danger" method="post"
-                    preserve-scroll>remove</Link>
-            </div>
+        <div v-if="props.edit" class="row justify-content-center w-auto">
+            <slot name="body"></slot>
         </div>
 
     </div>

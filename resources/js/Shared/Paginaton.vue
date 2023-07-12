@@ -1,10 +1,10 @@
 <template>
-    <ul class="list-group list-group-horizontal-sm">
+    <ul class="list-group list-group-horizontal-sm m-3">
 
 
 
         <span v-for="link in links">
-            <Link class="text-decoration-none" v-if="link.url != 'null'" :href="link.url">
+            <Link class="text-decoration-none" v-if="link.url != 'null'" :href="link.url" preserve-scroll>
             <li class="list-group-item" v-html="link.label" :class="{ 'fw-bold text-decoration-underline': link.active }" />
             </Link>
             <li v-else class="list-group-item" v-html="link.label"
