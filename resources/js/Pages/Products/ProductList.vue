@@ -20,8 +20,6 @@ let props = defineProps({
 
 let page = new URL(location.href).searchParams.get('page');
 
-console.log('termékek:'+usePage().props.products.data.length);
-
 if (!usePage().props.products.data.length && page > 1) {
     router.get("/home", { page: 1 }, { replace: true })
 }
@@ -35,7 +33,7 @@ if (!usePage().props.products.data.length && page > 1) {
 
     <div class="container-fluid p-4">
 
-            <div class="row justify-content-center align-items-center gap-5">
+            <div class="row justify-content-center align-items-center gap-2">
                 <ProductCard :product="i" :edit="auth" v-for="(i, index) in props.items" :key="i.id"></ProductCard>
             </div>
 

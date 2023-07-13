@@ -19,20 +19,54 @@ class ProductController extends Controller
 
         if ($req->has('name')) {
             //dd($req['name']);
-            return inertia('Home',
-            ['products'=>Product::query()->when(
-                $req['name'],function($query,$name){
-                    $query->where('name','like','%'.$name.'%');
-                })
-                ->paginate(4)
-                ->withQueryString()
-            ]);
+            return inertia(
+                'Home',
+                [
+                    'products' => Product::query()->when(
+                        $req['name'],
+                        function ($query, $name) {
+                            $query->where('name', 'like', '%' . $name . '%');
+                        }
+                    )
+                        ->paginate(4)
+                        ->withQueryString()
+                ]
+            );
         }
 
         if ($req->has('price')) {
-            dd($req['price']);
+            //dd($req['price']);
+            return inertia(
+                'Home',
+                [
+                    'products' => Product::query()->when(
+                        $req['price'],
+                        function ($query, $price) {
+                            $query->where('price', '=', $price);
+                        }
+                    )
+                        ->paginate(4)
+                        ->withQueryString()
+                ]
+            );
         }
 
+        if ($req->has('sort')) {
+
+            if ($req['sort'] == 'priceDesc') {
+
+                // dd($req['sort']);
+
+                return inertia('Home', ['products' => Product::orderBy('price', 'DESC')->Paginate(4)->withQueryString()]);
+
+            } else if ($req['sort'] == 'priceAsc') {
+
+                // dd($req['sort']);
+
+                return inertia('Home', ['products' => Product::orderBy('price', 'ASC')->Paginate(4)->withQueryString()]);
+
+            }
+        }
 
         return inertia('Home', ['products' => Product::Paginate(4)]);
     }

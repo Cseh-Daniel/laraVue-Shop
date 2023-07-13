@@ -21,7 +21,14 @@ class DatabaseSeeder extends Seeder
          ];
          for ($i=0; $i < 10; $i++) {
             $products['name']="Teszt Termék".$i;
-            $products['price']=$i*111;
+            $products['price']=random_int(1,9999);
+
+            \App\Models\Product::create($products);
+
+        }
+        for ($i=0; $i < 5; $i++) {
+            $products['name']="Product".$i;
+            $products['price']=random_int(1,9999);
 
             \App\Models\Product::create($products);
 
