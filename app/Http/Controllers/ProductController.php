@@ -133,6 +133,6 @@ class ProductController extends Controller
         if (Product::destroy($id) && $p['file_path']) {
             $file = File::delete($p['file_path']);
         }
-        return Inertia::location(url()->previous());
+        return redirect(url()->previous());
     }
 }
