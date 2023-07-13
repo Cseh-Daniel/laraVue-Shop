@@ -4,12 +4,8 @@ import { createApp, h } from 'vue'
 import { createInertiaApp,Head,Link } from '@inertiajs/vue3'
 import Layout from '@shared/Layout.vue'
 
-/* import the fontawesome core */
-import { library } from '@fortawesome/fontawesome-svg-core'
 /* import font awesome icon component */
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-/* import specific icons */
-//import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
 
 createInertiaApp({
   resolve: name => {

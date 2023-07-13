@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::redirect('/', "/home");
 
 Route::get('/home', [ProductController::class, 'index'])->name("home");
-
+Route::get('/cart',[ProductController::class,'cartIndex']);
 
 Route::middleware("guest")->group(
     function () {
@@ -47,9 +47,3 @@ Route::middleware("auth")->group(
         Route::post('/logout', [LoginController::class, 'destroy']);
     }
 );
-
-Route::get('/test',function(){
-
-    return view('grid');
-
-});

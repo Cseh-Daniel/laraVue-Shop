@@ -58,13 +58,11 @@ class ProductController extends Controller
                 // dd($req['sort']);
 
                 return inertia('Home', ['products' => Product::orderBy('price', 'DESC')->Paginate(4)->withQueryString()]);
-
             } else if ($req['sort'] == 'priceAsc') {
 
                 // dd($req['sort']);
 
                 return inertia('Home', ['products' => Product::orderBy('price', 'ASC')->Paginate(4)->withQueryString()]);
-
             }
         }
 
@@ -168,5 +166,13 @@ class ProductController extends Controller
             $file = File::delete($p['file_path']);
         }
         return redirect(url()->previous());
+    }
+
+
+    public function cartIndex()
+    {
+
+        return inertia('Cart/Index');
+
     }
 }
