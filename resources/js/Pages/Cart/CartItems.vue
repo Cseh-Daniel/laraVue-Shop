@@ -1,7 +1,11 @@
 <script setup>
-defineProps({
+import {reactive, watch } from "vue";
+
+let props=defineProps({
  items:Object
 })
+//reactive-> props.items.quantity -> watch -> update server-side
+
 
 </script>
 

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, watch, onMounted } from "vue";
+import { ref, reactive, watch } from "vue";
 import { Link, usePage, router } from '@inertiajs/vue3';
 import debounce from "lodash/debounce";
 
