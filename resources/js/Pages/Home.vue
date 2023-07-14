@@ -1,14 +1,15 @@
 <script setup>
 import { ref, reactive, watch, onMounted } from "vue";
-import Pagination from '@shared/Paginaton.vue';
-import ProductList from './Products/productList.vue';
 import { Link, usePage, router } from '@inertiajs/vue3';
 import debounce from "lodash/debounce";
 
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faCartShopping } from '@fortawesome/free-solid-svg-icons'
-
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
 library.add(faCartShopping);
+
+import Pagination from '@shared/Paginaton.vue';
+import ProductList from './Products/productList.vue';
+import CartItems from './Cart/CartItems.vue';
 
 let props = defineProps({
     filters: {
@@ -25,6 +26,12 @@ let props = defineProps({
 let auth = ref(usePage().props.auth.user ? true : false);
 let search = reactive(props.filters);
 let sort = ref(props.sort);
+
+let cart = {
+    name: 'test nameasda',
+    price: 100000,
+    qty: 11
+}
 
 watch(() => search.name,
     debounce(
@@ -77,16 +84,28 @@ function sorter(e) {
 
         </div>
 
-        <div class="row justify-content-between mt-2">
-            <div class="col-2">
+        <div class="row mt-2">
+
+            <div class="col">
                 <Link v-if="auth" href="/new-product" class="btn btn-outline-primary" as="button">New Product</Link>
             </div>
 
-            <div class="col-1 d-flex justify-content-end">
-                <Link v-if="auth" href="/cart" class="btn btn-outline-primary" as="button">
-                <font-awesome-icon icon="cart-shopping" />
-                </Link>
+            <div class="col">
+
+                <div class="dropdown d-flex justify-content-end">
+                    <Button v-if="auth" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <font-awesome-icon icon="cart-shopping" />
+                    </Button>
+                    <div class="dropdown-menu container-fluid">
+
+                        <CartItems :items="cart" />
+                        <CartItems :items="cart" />
+
+                    </div>
+                </div>
             </div>
+
 
         </div>
     </div>
