@@ -9,17 +9,22 @@ use Illuminate\Support\Facades\Session;
 
 class CartController extends Controller
 {
+    public function getCart(){
+
+        $userId = auth()->user() ? auth()->user()->id : Session::getId();
+        $cart = \Cart::session($userId);
+        return $cart;
+    }
 
     public function addToCart($prodId): void
     {
-        $userId = auth()->user() ? auth()->user()->id : Session::getId();
+        $cart = $this->getCart();
         // dd(\Cart::getTotal());
 
 
         $p = Product::find($prodId);
         //dd($p['name'], $p['price'], $userId);
 
-        $cart = \Cart::session($userId);
 
         $cart->add(array(
             'id' => $p['id'],
@@ -29,11 +34,16 @@ class CartController extends Controller
         ));
     }
 
-    public function getCart()
+    public function getCartContent()
     {
-        $userId = auth()->user() ? auth()->user()->id : Session::getId();
-        $cart = \Cart::session($userId);
+        $cart = $this->getCart();
 
         dd($cart->getContent());
     }
+
+    public function removeProd($id){
+        $cart = $this->getCart();
+        $cart->remove($id);
+    }
+
 }
