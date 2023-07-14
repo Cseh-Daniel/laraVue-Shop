@@ -2,8 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Darryldecode\Cart\Cart;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -36,11 +38,18 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $cartId = auth()->user() ? auth()->user()->id : Session::getId();
+        $cart = \Cart::session($cartId);
+
         return array_merge(parent::share($request), [
 
             'auth.user' => fn () => $request->user() ?
-            ['username' => $request->user()->name]
-             : null,
+                ['username' => $request->user()->name]
+                : null,
+            'cart' => [
+                'items'=>$cart->getContent(),
+                'Total'=>$cart->getTotal()
+                ]
 
         ]);
     }

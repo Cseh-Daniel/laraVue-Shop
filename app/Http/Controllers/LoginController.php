@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+
+use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Inertia\Inertia;
+use App\Http\Controllers\CartController;
 
 class LoginController extends Controller
 {
@@ -29,7 +31,6 @@ class LoginController extends Controller
 
         if (auth()->attempt($credentials)) {
             $request->session()->regenerate();
-
             return redirect()->intended();
         }
 
@@ -48,5 +49,4 @@ class LoginController extends Controller
 
         return Inertia::location('/');
     }
-
 }

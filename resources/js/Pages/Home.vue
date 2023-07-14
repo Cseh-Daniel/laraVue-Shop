@@ -27,11 +27,7 @@ let auth = ref(usePage().props.auth.user ? true : false);
 let search = reactive(props.filters);
 let sort = ref(props.sort);
 
-let cart = {
-    name: 'test nameasda',
-    price: 100000,
-    qty: 11
-}
+let cart = usePage().props.cart;
 
 watch(() => search.name,
     debounce(
@@ -97,10 +93,16 @@ function sorter(e) {
                         aria-expanded="false">
                         <font-awesome-icon icon="cart-shopping" />
                     </Button>
-                    <div class="dropdown-menu container-fluid">
+                    <div class="dropdown-menu container shadow">
 
-                        <CartItems :items="cart" />
-                        <CartItems :items="cart" />
+                        <CartItems v-for="cartProd in cart.items" :items="cartProd" />
+                        <div class="d-flex justify-content-center">
+                            <div class="w-75">
+                                <hr>
+                                <h3 class="text-center">Total: {{ cart.Total }}</h3>
+                            </div>
+
+                        </div>
 
                     </div>
                 </div>
@@ -111,8 +113,7 @@ function sorter(e) {
     </div>
 
 
-    <ProductList @nameSearch="console.log('keresés')" :items="usePage().props.products.data" :col-number=2 :key="search">
-    </ProductList>
+    <ProductList @nameSearch="console.log('keresés')" :items="usePage().props.products.data" :col-number=2 :key="search" />
 
     <div class="d-flex justify-content-center align-items-center">
         <Pagination :links="usePage().props.products.links"></Pagination>

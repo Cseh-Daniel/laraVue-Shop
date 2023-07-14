@@ -2,8 +2,8 @@
 /* import the fontawesome core */
 import { library } from '@fortawesome/fontawesome-svg-core'
 /* import font awesome icon component */
-import { faImage,faCartPlus } from '@fortawesome/free-solid-svg-icons'
-library.add(faImage,faCartPlus);
+import { faImage, faCartPlus } from '@fortawesome/free-solid-svg-icons'
+library.add(faImage, faCartPlus);
 
 let props = defineProps({
     imgSrc: {
@@ -37,8 +37,8 @@ let props = defineProps({
         </div>
 
         <div class="d-flex gap-2 gap-md-3 justify-content-center">
-            <Link as="button" href="#" class="btn btn-outline-primary">
-                <font-awesome-icon icon="cart-plus" size="xl" />
+            <Link as="button" :href="'/add-to-cart/' + product.id" class="btn btn-outline-primary" preserve-scroll>
+            <font-awesome-icon icon="cart-plus" size="xl" />
             </Link>
             <Link v-if="props.edit" :href="'/edit-product/' + product.id" as="button" class="btn btn-outline-warning">
             Edit

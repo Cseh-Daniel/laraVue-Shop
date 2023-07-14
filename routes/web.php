@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RegisterController;
@@ -20,7 +21,9 @@ use Illuminate\Support\Facades\Route;
 Route::redirect('/', "/home");
 
 Route::get('/home', [ProductController::class, 'index'])->name("home");
-Route::get('/cart',[ProductController::class,'cartIndex']);
+// Route::get('/cart',[ProductController::class,'cartIndex']);
+
+Route::get('/add-to-cart/{id}',[CartController::class,'addToCart']);
 
 Route::middleware("guest")->group(
     function () {
@@ -42,8 +45,8 @@ Route::middleware("auth")->group(
 
         Route::post('/delete-product/{id}', [ProductController::class, 'destroy']);
 
-
-
         Route::post('/logout', [LoginController::class, 'destroy']);
     }
 );
+
+Route::get('/cartTest',[CartController::class,'getCart']);
