@@ -89,7 +89,7 @@ function sorter(e) {
             <div class="col">
 
                 <div class="dropdown d-flex justify-content-end">
-                    <Button v-if="auth" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"
+                    <Button class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"
                         aria-expanded="false">
                         <font-awesome-icon icon="cart-shopping" />
                     </Button>
