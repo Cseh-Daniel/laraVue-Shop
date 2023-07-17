@@ -17,23 +17,40 @@ class CartController extends Controller
         return $cart;
     }
 
-    public function addToCart($prodId): void
+    // public function addToCart($prodId): void
+    // {
+    //     $cart = $this->getCart();
+    //     $p = Product::find($prodId);
+    //     $cart->add(array(
+    //         'id' => $p['id'],
+    //         'name' => $p['name'],
+    //         'price' => $p['price'],
+    //         'quantity' => 1
+    //     ));
+    // }
+
+    public function addToCart(Request $req): void
     {
+        $minId = Product::orderBy('id', 'asc')->first()->id;
+        $maxId = Product::orderBy('id', 'desc')->first()->id;
+        $req = $req->validate([
+            'id' => ['integer', 'required', 'min:' . $minId, 'max:' . $maxId],
+            'qty' => ['integer', 'required', 'min:1']
+        ]);
+
         $cart = $this->getCart();
-        // dd(\Cart::getTotal());
-
-
-        $p = Product::find($prodId);
-        //dd($p['name'], $p['price'], $userId);
-
+        $p = Product::find($req['id']);
 
         $cart->add(array(
             'id' => $p['id'],
             'name' => $p['name'],
             'price' => $p['price'],
-            'quantity' => 1
+            'quantity' => intval($req['qty'])
         ));
+
+        // dd($req['id'], $req['qty']);
     }
+
 
     public function getCartContent()
     {

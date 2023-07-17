@@ -23,7 +23,9 @@ Route::redirect('/', "/home");
 Route::get('/home', [ProductController::class, 'index'])->name("home");
 // Route::get('/cart',[ProductController::class,'cartIndex']);
 
-Route::get('/add-to-cart/{id}', [CartController::class, 'addToCart']);
+// Route::get('/add-to-cart/{id}', [CartController::class, 'addToCart']);
+Route::get('/add-to-cart', [CartController::class, 'addToCart']);
+
 Route::get('/remove-from-cart/{id}', [CartController::class, 'removeProd']);
 Route::post('/cart-update', [CartController::class, 'updateCart']);
 

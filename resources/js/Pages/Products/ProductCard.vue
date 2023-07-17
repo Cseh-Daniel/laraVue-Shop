@@ -3,6 +3,9 @@
 import { library } from '@fortawesome/fontawesome-svg-core'
 /* import font awesome icon component */
 import { faImage, faCartPlus } from '@fortawesome/free-solid-svg-icons'
+import { router } from '@inertiajs/vue3';
+import { reactive } from 'vue';
+
 library.add(faImage, faCartPlus);
 
 let props = defineProps({
@@ -13,6 +16,18 @@ let props = defineProps({
     edit: Boolean,
     product: Object
 })
+
+
+let product=reactive(props.product)
+
+function addToCart(prodId) {
+
+    let qty = document.getElementById(prodId + '-qty');
+    console.log(prodId, qty.value);
+    // :href="'/add-to-cart/'
+    router.get("/add-to-cart",{id:prodId,qty:qty.value},{preserveScroll:true});
+}
+
 </script>
 
 <template>
@@ -37,14 +52,27 @@ let props = defineProps({
         </div>
 
         <div class="d-flex gap-2 gap-md-3 justify-content-center">
-            <Link as="button" :href="'/add-to-cart/' + product.id" class="btn btn-outline-primary" preserve-scroll>
-            <font-awesome-icon icon="cart-plus" size="xl" />
-            </Link>
+
+            <div class="input-group w-30">
+                <input class="form-control" type="number" :name="product.id + '-qty'" :id="product.id + '-qty'"
+                    placeholder="Quantity" min="1" value="1">
+
+                <button class="btn btn-outline-primary" @click="addToCart(product.id)">
+                    <font-awesome-icon icon="cart-plus" size="xl" />
+                </button>
+
+                <!-- <Link as="button" :href="'/add-to-cart/' + product.id" class="btn btn-outline-primary" preserve-scroll>
+                <font-awesome-icon icon="cart-plus" size="xl" />
+                </Link> -->
+
+            </div>
+
             <Link v-if="props.edit" :href="'/edit-product/' + product.id" as="button" class="btn btn-outline-warning">
             Edit
             </Link>
             <Link v-if="props.edit" :href="'/delete-product/' + product.id" as="button" class="btn btn-outline-danger"
                 method="post" preserve-scroll>remove</Link>
+
         </div>
 
     </div>
@@ -59,5 +87,10 @@ let props = defineProps({
     width: auto;
     height: auto;
 
+}
+
+.w-30 {
+
+    max-width: 30%;
 }
 </style>
