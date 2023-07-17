@@ -48,7 +48,7 @@ class HandleInertiaRequests extends Middleware
                 : null,
             'cart' => [
                 'items'=>$cart->getContent(),
-                'Total'=>$cart->getTotal()
+                'total'=>$cart->getTotal()
                 ]
 
         ]);

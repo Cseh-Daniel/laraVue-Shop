@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Session;
 
 class CartController extends Controller
 {
-    public function getCart(){
+    public function getCart()
+    {
 
         $userId = auth()->user() ? auth()->user()->id : Session::getId();
         $cart = \Cart::session($userId);
@@ -41,9 +42,33 @@ class CartController extends Controller
         dd($cart->getContent());
     }
 
-    public function removeProd($id){
+    public function removeProd($id)
+    {
         $cart = $this->getCart();
         $cart->remove($id);
     }
 
+    public function updateCart(Request $req)
+    {
+        $cart = $this->getCart();
+
+        $req = $req->validate([
+            'id' => ['integer', 'required'],
+            'qty' => ['integer', 'required', 'min:1']
+        ]);
+
+        // dd($req);
+        $cart->update(
+            $req['id'],
+            array(
+                'quantity' =>
+                array(
+                    'relative' => false,
+                    'value' => $req['qty']
+                ),
+            )
+        );
+
+        //dd($cart->getContent(),$req['qty']);
+    }
 }

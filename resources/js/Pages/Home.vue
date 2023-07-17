@@ -51,6 +51,7 @@ function sorter(e) {
 
 }
 
+
 </script>
 
 <template>
@@ -63,7 +64,6 @@ function sorter(e) {
         <div class="row justify-content-center">
             <div class="col-3">
                 <input type="text" class="form-control" v-model="search.name" placeholder="search for Name">
-
             </div>
 
             <div class="col-3">
@@ -99,7 +99,7 @@ function sorter(e) {
                         <div class="d-flex justify-content-center">
                             <div class="w-75">
                                 <hr>
-                                <h3 class="text-center">Total: {{ cart.Total }}</h3>
+                                <h3 class="text-center">Total: {{ usePage().props.cart.total }}</h3>
                             </div>
 
                         </div>

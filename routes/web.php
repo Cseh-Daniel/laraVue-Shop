@@ -23,8 +23,10 @@ Route::redirect('/', "/home");
 Route::get('/home', [ProductController::class, 'index'])->name("home");
 // Route::get('/cart',[ProductController::class,'cartIndex']);
 
-Route::get('/add-to-cart/{id}',[CartController::class,'addToCart']);
-Route::get('/remove-from-cart/{id}',[CartController::class,'removeProd']);
+Route::get('/add-to-cart/{id}', [CartController::class, 'addToCart']);
+Route::get('/remove-from-cart/{id}', [CartController::class, 'removeProd']);
+Route::post('/cart-update', [CartController::class, 'updateCart']);
+
 
 Route::middleware("guest")->group(
     function () {
@@ -50,4 +52,4 @@ Route::middleware("auth")->group(
     }
 );
 
-Route::get('/cartTest',[CartController::class,'getCartContent']);
+Route::get('/cartTest', [CartController::class, 'getCartContent']);
