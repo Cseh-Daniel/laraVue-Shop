@@ -14,6 +14,14 @@ class DatabaseSeeder extends Seeder
     {
          \App\Models\User::factory(10)->create();
 
+        $defaultUser=[
+            'name'=>"Default User",
+            'email'=>"default@user.com",
+            'password'=> "password"
+        ];
+
+        \App\Models\User::create($defaultUser);
+
          $products=[
             'name'=>'',
             'file_path'=>'',
