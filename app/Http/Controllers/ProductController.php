@@ -102,10 +102,7 @@ class ProductController extends Controller
         $fileName = str_replace(" ", "_", $fileName);
         $fileName = $fileName . '.' . $file->getClientOriginalExtension();
 
-        //dd($fileName);
-
         $req['file_path'] = 'uploads/prod/' . $fileName;
-        // dd($req['file_path'],$req['name'],$req['price']);
 
         Product::create($req);
         $file->move('uploads/prod', $fileName);
@@ -163,15 +160,11 @@ class ProductController extends Controller
     {
         $p = Product::find($id);
 
+        (new CartController)->removeProd($id);
+
         if (Product::destroy($id) && $p['file_path']) {
             $file = File::delete($p['file_path']);
         }
         return redirect(url()->previous());
-    }
-
-
-    public function cartIndex()
-    {
-        return inertia('Cart/Index');
     }
 }
