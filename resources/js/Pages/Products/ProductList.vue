@@ -30,13 +30,11 @@ if (!usePage().props.products.data.length && page > 1) {
 
 
 <template>
-
     <div class="container-fluid p-4">
 
-            <div class="row justify-content-center align-items-center gap-2">
-                <ProductCard :product="i" :edit="auth" v-for="(i, index) in props.items" :key="i.id"></ProductCard>
-            </div>
+        <div class="row justify-content-center align-items-center gap-2">
+            <ProductCard :product="i" :edit="auth" v-for="(i, index) in props.items" :key="i.id"></ProductCard>
+        </div>
 
     </div>
-
 </template>

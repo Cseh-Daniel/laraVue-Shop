@@ -8,7 +8,7 @@ import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
 library.add(faCartShopping);
 
 import Pagination from '@shared/Paginaton.vue';
-import ProductList from './Products/productList.vue';
+import ProductList from './Products/ProductList.vue';
 import CartItems from './Cart/CartItems.vue';
 
 let props = defineProps({
@@ -32,22 +32,38 @@ let cart = usePage().props.cart;
 watch(() => search.name,
     debounce(
         (value) => {
-            router.get('/home', { name: value }, { replace: true, preserveState: true });
+            if (value != null) {
+                router.get('/home', { name: value }, { replace: true, preserveState: true });
+                search.price = null;
+                sort.value.value='';
+
+            }
         }, 500));
 
 watch(() => search.price,
     debounce(
         (value) => {
-            router.get('/home', { price: value }, { replace: true, preserveState: true });
+            if (value != null) {
+                router.get('/home', { price: value }, { replace: true, preserveState: true });
+                search.name = null;
+                sort.value.value='';
+            }
         }, 500));
 
 
-function sorter(e) {
+function sorter() {
 
-    // let value = e.target.options[e.target.options.selectedIndex].value;
+    let nameSort = new URL(location.href).searchParams.has('name');
+    nameSort = nameSort ? new URL(location.href).searchParams.get('name') : '';
+
     let value = sort.value.value;
-    console.log(value);
-    router.get('/home', { sort: value }, { replace: true, preserveState: true });
+    if (!nameSort) {
+        search.name = null;
+        search.price = null;
+        router.get('/home', { sort: value }, { replace: true, preserveState: true });
+    } else {
+        router.get('/home', { sort: value, name: nameSort }, { replace: true, preserveState: true });
+    }
 
 }
 
@@ -57,13 +73,11 @@ function sorter(e) {
 <template>
     <h1>Home</h1>
 
-
-
-
     <div class="container-fluid mb-4 justify-content-center">
         <div class="row justify-content-center">
+
             <div class="col-3">
-                <input type="text" class="form-control" v-model="search.name" placeholder="search for Name">
+                <input type="text" class="form-control" v-model="search.name" id="nameSearch" placeholder="search for Name">
             </div>
 
             <div class="col-3">
@@ -89,8 +103,7 @@ function sorter(e) {
             <div class="col">
 
                 <div class="dropdown d-flex justify-content-end">
-                    <Button class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+                    <Button class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                         <font-awesome-icon icon="cart-shopping" />
                     </Button>
                     <div class="dropdown-menu container shadow">

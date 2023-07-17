@@ -17,15 +17,13 @@ let props = defineProps({
     product: Object
 })
 
-
-let product=reactive(props.product)
+let product = reactive(props.product)
 
 function addToCart(prodId) {
 
     let qty = document.getElementById(prodId + '-qty');
     console.log(prodId, qty.value);
-    // :href="'/add-to-cart/'
-    router.get("/add-to-cart",{id:prodId,qty:qty.value},{preserveScroll:true});
+    router.get("/add-to-cart", { id: prodId, qty: qty.value }, { preserveScroll: true });
 }
 
 </script>
@@ -60,11 +58,6 @@ function addToCart(prodId) {
                 <button class="btn btn-outline-primary" @click="addToCart(product.id)">
                     <font-awesome-icon icon="cart-plus" size="xl" />
                 </button>
-
-                <!-- <Link as="button" :href="'/add-to-cart/' + product.id" class="btn btn-outline-primary" preserve-scroll>
-                <font-awesome-icon icon="cart-plus" size="xl" />
-                </Link> -->
-
             </div>
 
             <Link v-if="props.edit" :href="'/edit-product/' + product.id" as="button" class="btn btn-outline-warning">

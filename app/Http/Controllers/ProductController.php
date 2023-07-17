@@ -17,8 +17,24 @@ class ProductController extends Controller
     public function index(Request $req)
     {
 
+        if ($req->has('name') && $req->has('sort')) {
+
+            $sort=$req['sort']=='priceDesc'?'desc':'asc';
+
+            return inertia('Home',[
+                'products' => Product::query()->when(
+                    $req['name'],
+                    function ($query, $name) {
+                        $query->where('name', 'like', '%' . $name . '%');
+                    }
+                )   ->orderBy('price',$sort)
+                    ->paginate(4)
+                    ->withQueryString()
+                ]);
+
+        }
+
         if ($req->has('name')) {
-            //dd($req['name']);
             return inertia(
                 'Home',
                 [
@@ -35,7 +51,6 @@ class ProductController extends Controller
         }
 
         if ($req->has('price')) {
-            //dd($req['price']);
             return inertia(
                 'Home',
                 [
@@ -54,14 +69,8 @@ class ProductController extends Controller
         if ($req->has('sort')) {
 
             if ($req['sort'] == 'priceDesc') {
-
-                // dd($req['sort']);
-
                 return inertia('Home', ['products' => Product::orderBy('price', 'DESC')->Paginate(4)->withQueryString()]);
             } else if ($req['sort'] == 'priceAsc') {
-
-                // dd($req['sort']);
-
                 return inertia('Home', ['products' => Product::orderBy('price', 'ASC')->Paginate(4)->withQueryString()]);
             }
         }
@@ -116,20 +125,12 @@ class ProductController extends Controller
      */
     public function edit(string $id)
     {
-        //return inertia(dd(User::find($id)));
-        //return inertia('Products/Create',["product"=>Product::find($id)]);
-
         $product = Product::find($id);
-
-        //dd($product['name']);
 
         return inertia("Products/Create", [
             "title" => "Edit Product",
             "product" => $product
         ]);
-
-        //return inertia('Products/Create',['test'=>'asdf']);
-
     }
 
     /**
@@ -171,8 +172,6 @@ class ProductController extends Controller
 
     public function cartIndex()
     {
-
         return inertia('Cart/Index');
-
     }
 }

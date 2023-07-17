@@ -11,23 +11,10 @@ class CartController extends Controller
 {
     public function getCart()
     {
-
         $userId = auth()->user() ? auth()->user()->id : Session::getId();
         $cart = \Cart::session($userId);
         return $cart;
     }
-
-    // public function addToCart($prodId): void
-    // {
-    //     $cart = $this->getCart();
-    //     $p = Product::find($prodId);
-    //     $cart->add(array(
-    //         'id' => $p['id'],
-    //         'name' => $p['name'],
-    //         'price' => $p['price'],
-    //         'quantity' => 1
-    //     ));
-    // }
 
     public function addToCart(Request $req): void
     {
@@ -47,8 +34,6 @@ class CartController extends Controller
             'price' => $p['price'],
             'quantity' => intval($req['qty'])
         ));
-
-        // dd($req['id'], $req['qty']);
     }
 
 
@@ -73,8 +58,6 @@ class CartController extends Controller
             'id' => ['integer', 'required'],
             'qty' => ['integer', 'required', 'min:1']
         ]);
-
-        // dd($req);
         $cart->update(
             $req['id'],
             array(
@@ -85,7 +68,5 @@ class CartController extends Controller
                 ),
             )
         );
-
-        //dd($cart->getContent(),$req['qty']);
     }
 }

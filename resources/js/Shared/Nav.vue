@@ -14,19 +14,14 @@ defineProps({
         <div class="container-fluid">
             <Link class="navbar-brand" href="/">
             <slot></slot>
-
             </Link>
-
-
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
                     <NavLink href="/" :active="$page.component == 'Home'">Home</NavLink>
-
                 </ul>
-
             </div>
+
             <div>
                 <span class="d-flex gap-2" v-if="usePage().props.auth.user">
                     Welcome, {{ usePage().props.auth.user.username }}
@@ -34,8 +29,6 @@ defineProps({
                         <form action="/logout" method="post">
                             <Link href="/logout" method="post" class="badge bg-secondary mt-1" as="span">Logout</Link>
                         </form>
-
-
                     </h6>
                 </span>
                 <span class="d-flex gap-2" v-else>
@@ -48,10 +41,6 @@ defineProps({
                 <span class="navbar-toggler-icon"></span>
             </button>
         </div>
-
-
-
     </nav>
 </template>
 
-<style></style>

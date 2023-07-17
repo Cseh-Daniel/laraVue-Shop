@@ -11,10 +11,6 @@ const props = defineProps({
     },
 });
 
-
-
-
-
 let form = useForm({
     name: '',
     file_path: '',
