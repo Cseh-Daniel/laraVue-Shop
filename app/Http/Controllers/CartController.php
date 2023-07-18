@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Session;
 
 class CartController extends Controller
 {
+    /**
+     * returns the cart of the active user
+     */
     public function getCart()
     {
         $userId = auth()->user() ? auth()->user()->id : Session::getId();
@@ -16,6 +19,10 @@ class CartController extends Controller
         return $cart;
     }
 
+
+    /**
+     * Appends cart with choosen product
+     */
     public function addToCart(Request $req): void
     {
         $minId = Product::orderBy('id', 'asc')->first()->id;
@@ -36,20 +43,18 @@ class CartController extends Controller
         ));
     }
 
-
-    public function getCartContent()
-    {
-        $cart = $this->getCart();
-
-        dd($cart->getContent());
-    }
-
+    /**
+     * Removes choosen product from cart
+     */
     public function removeProd($id)
     {
         $cart = $this->getCart();
         $cart->remove($id);
     }
 
+    /**
+     * Changes quantity of choosen product
+     */
     public function updateCart(Request $req)
     {
         $cart = $this->getCart();

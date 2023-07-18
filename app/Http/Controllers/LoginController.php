@@ -39,6 +39,9 @@ class LoginController extends Controller
         ])->onlyInput('email');
     }
 
+    /**
+     * signs out active user
+    */
     public function destroy(Request $request)
     {
         auth()->logout();
