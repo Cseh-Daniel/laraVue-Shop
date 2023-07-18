@@ -142,10 +142,21 @@ class ProductController extends Controller
     public function filterByPrice($req)
     {
 
+        // dd($req['price']['min'],$req['price']['max']);
+
+        if($req['price']['min'] > $req['price']['max']){
+            $tmp['min']=$req['price']['max'];
+            $tmp['max']=$req['price']['min'];
+        }else{
+            $tmp['min']=$req['price']['min'];
+            $tmp['max']=$req['price']['max'];
+        }
+
         $products = Product::query()->when(
-            $req['price'],
+            $tmp,
             function ($query, $price) {
-                $query->where('price', '=', $price);
+                // dd($price);
+                $query->whereBetween('price',[$price['min'],$price['max']]);
             }
         )
             ->paginate(4)

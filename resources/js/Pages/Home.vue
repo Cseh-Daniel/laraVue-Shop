@@ -16,7 +16,10 @@ let props = defineProps({
         type: Object,
         default: {
             name: '',
-            price: ''
+            price: {
+                min: '',
+                max: ''
+            }
         }
     },
     products: Object,
@@ -35,7 +38,7 @@ watch(() => search.name,
             if (value != null) {
                 router.get('/home', { name: value }, { replace: true, preserveState: true });
                 search.price = null;
-                sort.value.value='';
+                sort.value.value = '';
 
             }
         }, 500));
@@ -46,9 +49,9 @@ watch(() => search.price,
             if (value != null) {
                 router.get('/home', { price: value }, { replace: true, preserveState: true });
                 search.name = null;
-                sort.value.value='';
+                sort.value.value = '';
             }
-        }, 500));
+        }, 500), { deep: true });
 
 
 function sorter() {
@@ -58,8 +61,6 @@ function sorter() {
 
     let value = sort.value.value;
     if (!nameSort) {
-        search.name = null;
-        search.price = null;
         router.get('/home', { sort: value }, { replace: true, preserveState: true });
     } else {
         router.get('/home', { sort: value, name: nameSort }, { replace: true, preserveState: true });
@@ -80,8 +81,10 @@ function sorter() {
                 <input type="text" class="form-control" v-model="search.name" id="nameSearch" placeholder="search for Name">
             </div>
 
-            <div class="col-3">
-                <input type="number" class="form-control" v-model="search.price" placeholder="search for Price">
+            <div class="d-flex col-3 gap-md-3 gap-1">
+                <input type="number" class="form-control" v-model="search.price.min" placeholder="Price min">
+                <input type="number" class="form-control" v-model="search.price.max" placeholder="Price max">
+
             </div>
 
             <div class="col-3">
