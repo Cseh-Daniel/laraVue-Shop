@@ -19,63 +19,22 @@ class ProductController extends Controller
 
         if ($req->has('name') && $req->has('sort')) {
 
-            $sort=$req['sort']=='priceDesc'?'desc':'asc';
+            $products = $this->filterByNameSorter($req);
+        } else if ($req->has('name')) {
 
-            return inertia('Home',[
-                'products' => Product::query()->when(
-                    $req['name'],
-                    function ($query, $name) {
-                        $query->where('name', 'like', '%' . $name . '%');
-                    }
-                )   ->orderBy('price',$sort)
-                    ->paginate(4)
-                    ->withQueryString()
-                ]);
+            $products = $this->filterByName($req);
+        } else if ($req->has('price')) {
 
+            $products = $this->filterByPrice($req);
+        } else if ($req->has('sort')) {
+
+            $products = $this->sort($req);
+        } else {
+
+            $products = Product::Paginate(4);
         }
 
-        if ($req->has('name')) {
-            return inertia(
-                'Home',
-                [
-                    'products' => Product::query()->when(
-                        $req['name'],
-                        function ($query, $name) {
-                            $query->where('name', 'like', '%' . $name . '%');
-                        }
-                    )
-                        ->paginate(4)
-                        ->withQueryString()
-                ]
-            );
-        }
-
-        if ($req->has('price')) {
-            return inertia(
-                'Home',
-                [
-                    'products' => Product::query()->when(
-                        $req['price'],
-                        function ($query, $price) {
-                            $query->where('price', '=', $price);
-                        }
-                    )
-                        ->paginate(4)
-                        ->withQueryString()
-                ]
-            );
-        }
-
-        if ($req->has('sort')) {
-
-            if ($req['sort'] == 'priceDesc') {
-                return inertia('Home', ['products' => Product::orderBy('price', 'DESC')->Paginate(4)->withQueryString()]);
-            } else if ($req['sort'] == 'priceAsc') {
-                return inertia('Home', ['products' => Product::orderBy('price', 'ASC')->Paginate(4)->withQueryString()]);
-            }
-        }
-
-        return inertia('Home', ['products' => Product::Paginate(4)]);
+        return inertia('Home', ['products' => $products]);
     }
 
     /**
@@ -150,7 +109,7 @@ class ProductController extends Controller
         Product::where('id', $id)->update($req);
         $file->move('uploads/prod', $fileName);
 
-        return redirect("/");
+        return Inertia::location('/');
     }
 
     /**
@@ -166,5 +125,72 @@ class ProductController extends Controller
             $file = File::delete($p['file_path']);
         }
         return redirect(url()->previous());
+    }
+
+    /**
+     * Filters products by name
+     */
+    public function filterByName($req)
+    {
+        $products = Product::query()->when(
+            $req['name'],
+            function ($query, $name) {
+                $query->where('name', 'like', '%' . $name . '%');
+            }
+        )
+            ->paginate(4)
+            ->withQueryString();
+
+        return $products;
+    }
+
+    /**
+     * filters products by price
+     */
+    public function filterByPrice($req)
+    {
+
+        $products = Product::query()->when(
+            $req['price'],
+            function ($query, $price) {
+                $query->where('price', '=', $price);
+            }
+        )
+            ->paginate(4)
+            ->withQueryString();
+        return $products;
+    }
+
+    /**
+     * Filters products by name and sorts by price or name
+     */
+    public function filterByNameSorter($req)
+    {
+        $sort = str_ends_with($req['sort'], 'Desc') ? "Desc" : "Asc";
+        $order = str_starts_with($req['sort'], 'price') ? 'price' : 'name';
+
+        $products = Product::query()->when(
+            $req['name'],
+            function ($query, $name) {
+                $query->where('name', 'like', '%' . $name . '%');
+            }
+        )->orderBy($order, $sort)
+            ->paginate(4)
+            ->withQueryString();
+
+        return $products;
+    }
+
+    /**
+     * sorts products by price or name
+     */
+    public function sort($req)
+    {
+        $sort = str_ends_with($req['sort'], 'Desc') ? "Desc" : "Asc";
+        $order = str_starts_with($req['sort'], 'price') ? 'price' : 'name';
+
+        $products = Product::orderBy($order, $sort)->Paginate(4)->withQueryString();
+
+        return $products;
     }
 }

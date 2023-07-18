@@ -87,8 +87,12 @@ function sorter() {
             <div class="col-3">
                 <select ref="sort" @change="sorter" name="sort" id="sort" class="form-select">
                     <option value="" disabled selected>Sort Products</option>
+
                     <option value="priceDesc">Price: High -> Low</option>
                     <option value="priceAsc">Price: Low -> High</option>
+
+                    <option value="nameAsc">Name: A -> Z</option>
+                    <option value="nameDesc">Name: Z -> A</option>
                 </select>
             </div>
 

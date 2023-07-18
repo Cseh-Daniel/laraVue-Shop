@@ -56,9 +56,16 @@ function submit() {
 
                 <div class="mb-3">
                     <label for="file_path" class="form-label">Product image</label>
-                    <input @input="form.file_path = $event.target.files[0]" type="file" name="file_path" id="file_path"
-                        class="form-control">
-                    <progress v-if="form.progress" :value="form.progress.percentage" max="100">
+
+                    <input
+                    @input="form.file_path = $event.target.files[0]"
+                    type="file"
+                    name="file_path"
+                    id="file_path"
+                    class="form-control"
+                    >
+
+                    <progress class="w-100" v-if="form.progress" :value="form.progress.percentage" max="100">
                         {{ form.progress.percentage }}%
                     </progress>
                     <div v-if="form.errors.file_path" class="bg-danger-subtle rounded p-1 w-50 text-center m-2">
