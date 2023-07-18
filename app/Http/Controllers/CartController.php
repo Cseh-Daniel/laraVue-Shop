@@ -56,9 +56,11 @@ class CartController extends Controller
         ];
 
         //ellenőrizni benne van-e már a termék a kosárban
-        $items=Cart::find($cartId,$p['id']);
-        dd($items);
+        $items=count(Cart::find($cartId,$p['id']));
 
+        // dd(count($items));
+
+        $items>0?'Cart::update':Cart::create($cartItem);
 
         //Cart::create($cartItem);
 
