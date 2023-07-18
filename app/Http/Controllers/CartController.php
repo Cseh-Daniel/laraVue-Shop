@@ -60,7 +60,7 @@ class CartController extends Controller
 
         // dd(count($items));
 
-        $items>0?'Cart::update':Cart::create($cartItem);
+        $items>0?'':Cart::create($cartItem);
 
         //Cart::create($cartItem);
 
