@@ -27,7 +27,7 @@ class CartController extends Controller
     public function getCartContent()
     {
 
-        $cartItems = Cart::select('carts.id','product_id', 'name', 'price', 'qty as quantity')
+        $cartItems = Cart::select('carts.id','user_id','product_id', 'name', 'price', 'qty as quantity')
             ->join('products', 'products.id', '=', 'carts.product_id')
             ->where('user_id', '=', $this->getCartId())->get();
         return $cartItems;
@@ -35,10 +35,6 @@ class CartController extends Controller
 
     public function getCartTotal()
     {
-
-        // $cartTotal = Cart::select('price', 'qty as quantity')
-        //     ->join('products', 'products.id', '=', 'carts.product_id')
-        //     ->where('user_id', '=', $this->getCartId())->get();
 
         $cartTotal=$this->getCartContent();
         $total = 0;
@@ -68,7 +64,7 @@ class CartController extends Controller
         ];
 
         //ellenőrizni benne van-e már a termék a kosárban
-        $items = Cart::getItems($userId, $p['id']); //lecserléni getCartContent-re?
+        $items = Cart::getItems($userId, $p['id']); //lecserélni getCartContent-re?
 
         if (count($items) > 0) {
 
