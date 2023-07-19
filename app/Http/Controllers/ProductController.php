@@ -38,7 +38,7 @@ class ProductController extends Controller
 
         return inertia('Home', ['products' => $products,
         'cart' => [
-            'items'=>(new CartController)->getCartContent(),
+            'items'=>(new CartController)->getCartContent((new CartController)->getCartId()),
             'total'=>(new CartController)->getCartTotal()
             ]]);
     }

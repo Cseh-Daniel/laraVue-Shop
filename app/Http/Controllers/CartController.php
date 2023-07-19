@@ -24,22 +24,21 @@ class CartController extends Controller
     /**
      * Gives back the product information for the cart of the active user.
      */
-    public function getCartContent()
+    public function getCartContent($userId)
     {
-
-        $cartItems = Cart::select('carts.id','user_id','product_id', 'name', 'price', 'qty as quantity')
+        $cartItems = Cart::select('carts.id', 'user_id', 'product_id', 'name', 'price', 'qty')
             ->join('products', 'products.id', '=', 'carts.product_id')
-            ->where('user_id', '=', $this->getCartId())->get();
+            ->where('user_id', '=', $userId)->get();
         return $cartItems;
     }
 
     public function getCartTotal()
     {
 
-        $cartTotal=$this->getCartContent();
+        $cartTotal = $this->getCartContent($this->getCartId());
         $total = 0;
         foreach ($cartTotal as $i) {
-            $total += $i['price'] * $i['quantity'];
+            $total += $i['price'] * $i['qty'];
         }
         return $total;
     }
@@ -64,13 +63,12 @@ class CartController extends Controller
         ];
 
         //ellenőrizni benne van-e már a termék a kosárban
-        $items = Cart::getItems($userId, $p['id']); //lecserélni getCartContent-re?
-
+        $items = Cart::getItems($userId, $p['id']);
         if (count($items) > 0) {
 
-            Cart::where('id',$items[0]->id)->update(['qty'=>$items[0]->qty+$req['qty']]);
-
+            Cart::where('id', $items[0]->id)->update(['qty' => $items[0]->qty + $req['qty']]);
         } else {
+
             Cart::create($cartItem);
         }
     }
@@ -93,8 +91,27 @@ class CartController extends Controller
             'qty' => ['integer', 'required', 'min:1']
         ]);
 
-        Cart::where('id',$req['id'])->update(['qty'=>$req['qty']]);
+        Cart::where('id', $req['id'])->update(['qty' => $req['qty']]);
+    }
 
+    public function dropCart($userId)
+    {
 
+        $cart = $this->getCartContent($userId);
+
+        foreach ($cart as $i) {
+            Cart::destroy($i['id']);
+        }
+    }
+
+    public function changeOwner($userId, $sessionId)
+    {
+
+        //$this->dropCart($userId);
+        $cart = $this->getCartContent($userId);
+        foreach ($cart as $i) {
+            Cart::where('user_id', (string)$userId)->update(['user_id' => (string)999]);
+            //string-re kell alakítani különben hiba, mivel a cartban a user_id string a session_id miatt
+        }
     }
 }

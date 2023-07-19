@@ -24,17 +24,10 @@ class Cart extends Model
      * if product_id given only that returns
      */
 
-    public static function getItems($uId,$pId=null)
+    public static function getItems($uId, $pId)
     {
-        if($pId){
-            $cart = DB::select("select * from carts where user_id=:uId and product_id=:pId",['uId'=>$uId,'pId'=>$pId]);
-        }else{
-            $cart = DB::select("select * from carts where user_id=:uId",['uId'=>$uId]);
-        }
-
-        $items=[];
+        $cart = DB::select("select * from carts where user_id=:uId and product_id=:pId", ['uId' => $uId, 'pId' => $pId]);
 
         return $cart;
     }
-
 }

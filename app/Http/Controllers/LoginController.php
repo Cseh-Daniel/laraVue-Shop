@@ -7,6 +7,8 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\CartController;
+use Illuminate\Support\Facades\Session;
+
 
 class LoginController extends Controller
 {
@@ -24,13 +26,22 @@ class LoginController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
+        $sessionId=Session::getId();
 
         if (auth()->attempt($credentials)) {
+
+
             $request->session()->regenerate();
+
+            // dd($sessionId,Session::getId());
+
+            (new CartController)->changeOwner(auth()->user()->id,$sessionId);
+
             return redirect()->intended();
         }
 
