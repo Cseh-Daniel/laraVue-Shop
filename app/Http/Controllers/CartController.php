@@ -21,20 +21,31 @@ class CartController extends Controller
         return $userId;
     }
 
-
+    /**
+     * Gives back the product information for the cart of the active user.
+     */
     public function getCartContent()
     {
 
-        //what if we want the cart of the guest user
-        $cart = Cart::find($this->getCartId());
-
-        $cartItems = [];
-        foreach ($cart as $item) {
-            $p = Product::find($item['product_id']);
-            array_push($cartItems, ['name' => $p['name'], 'price' => $p['price'], 'quantity' => $item['qty']]);
-        }
-
+        $cartItems = Cart::select('carts.id','product_id', 'name', 'price', 'qty as quantity')
+            ->join('products', 'products.id', '=', 'carts.product_id')
+            ->where('user_id', '=', $this->getCartId())->get();
         return $cartItems;
+    }
+
+    public function getCartTotal()
+    {
+
+        // $cartTotal = Cart::select('price', 'qty as quantity')
+        //     ->join('products', 'products.id', '=', 'carts.product_id')
+        //     ->where('user_id', '=', $this->getCartId())->get();
+
+        $cartTotal=$this->getCartContent();
+        $total = 0;
+        foreach ($cartTotal as $i) {
+            $total += $i['price'] * $i['quantity'];
+        }
+        return $total;
     }
 
     /**
@@ -42,32 +53,30 @@ class CartController extends Controller
      */
     public function addToCart(Request $req): void
     {
-        $this->getCartContent();
         $req = $req->validate([
             'id' => ['integer', 'required'],
             'qty' => ['integer', 'required', 'min:1']
         ]);
 
-        $cartId = $this->getCartId(); //userId or sessionId
+        $userId = $this->getCartId(); //userId or sessionId
         $p = Product::find($req['id']);
 
         $cartItem = [
-            'user_id' => $cartId,
+            'user_id' => $userId,
             'product_id' => $p['id'],
             'qty' => $req['qty']
         ];
 
         //ellenőrizni benne van-e már a termék a kosárban
-        $items = count(Cart::find($cartId, $p['id']));
+        $items = Cart::getItems($userId, $p['id']); //lecserléni getCartContent-re?
 
-        $items > 0 ? '' : Cart::create($cartItem);
+        if (count($items) > 0) {
 
-        // $cart->add(array(
-        //     'id' => $p['id'],
-        //     'name' => $p['name'],
-        //     'price' => $p['price'],
-        //     'quantity' => intval($req['qty'])
-        // ));
+            Cart::where('id',$items[0]->id)->update(['qty'=>$items[0]->qty+$req['qty']]);
+
+        } else {
+            Cart::create($cartItem);
+        }
     }
 
     /**
@@ -75,14 +84,7 @@ class CartController extends Controller
      */
     public function removeProd($id)
     {
-
-        $cartItem=Cart::find($this->getCartId(),$id);
-        //$cartItem->delete();
-        // $cart=$this->getCartContent($this->getCartId());
-
-
-        // $cart = $this->getCart();
-        // $cart->remove($id);
+        Cart::destroy($id);
     }
 
     /**
@@ -90,22 +92,13 @@ class CartController extends Controller
      */
     public function updateCart(Request $req)
     {
-        $cart = $this->getCart();
-
         $req = $req->validate([
             'id' => ['integer', 'required'],
             'qty' => ['integer', 'required', 'min:1']
         ]);
 
-        $cart->update(
-            $req['id'],
-            array(
-                'quantity' =>
-                array(
-                    'relative' => false,
-                    'value' => $req['qty']
-                ),
-            )
-        );
+        Cart::where('id',$req['id'])->update(['qty'=>$req['qty']]);
+
+
     }
 }

@@ -40,19 +40,12 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
 
-        $cart = (new CartController)->getCartContent();
-
 
         return array_merge(parent::share($request), [
 
             'auth.user' => fn () => $request->user() ?
                 ['username' => $request->user()->name]
                 : null,
-            'cart' => [
-                'items'=>$cart,
-                'total'=>'Totál'
-                ]
-
         ]);
     }
 }

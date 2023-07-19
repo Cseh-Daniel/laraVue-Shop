@@ -34,7 +34,13 @@ class ProductController extends Controller
             $products = Product::Paginate(4);
         }
 
-        return inertia('Home', ['products' => $products]);
+        // $cart = (new CartController)->getCartContent();
+
+        return inertia('Home', ['products' => $products,
+        'cart' => [
+            'items'=>(new CartController)->getCartContent(),
+            'total'=>(new CartController)->getCartTotal()
+            ]]);
     }
 
     /**
@@ -98,7 +104,9 @@ class ProductController extends Controller
         $fileName = $fileName . '.' . $file->getClientOriginalExtension();
 
         $req['file_path'] = 'uploads/prod/' . $fileName;
+
         Product::where('id', $id)->update($req);
+
         $file->move('uploads/prod', $fileName);
 
         return Inertia::location('/');
@@ -110,8 +118,6 @@ class ProductController extends Controller
     public function destroy(Request $request, string $id)
     {
         $p = Product::find($id);
-        //dd('itt vagyok');
-        //(new CartController)->removeProd($id);
 
         if (Product::destroy($id) && $p['file_path']) {
             File::delete($p['file_path']);
