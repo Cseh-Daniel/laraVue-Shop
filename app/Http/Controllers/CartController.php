@@ -21,15 +21,17 @@ class CartController extends Controller
         return $userId;
     }
 
-    public function getCartContent(){
+
+    public function getCartContent()
+    {
 
         //what if we want the cart of the guest user
-        $cart = DB::select("select * from carts where user_id=:id",['id'=>$this->getCartId()]);
-        //find(userId,productId=null)????
-        $cartItems=[];
-        foreach($cart as $item){
-            $p=Product::find($item->product_id);
-            array_push($cartItems,['name'=>$p['name'],'price'=>$p['price'],'quantity'=>$item->qty]);
+        $cart = Cart::find($this->getCartId());
+
+        $cartItems = [];
+        foreach ($cart as $item) {
+            $p = Product::find($item['product_id']);
+            array_push($cartItems, ['name' => $p['name'], 'price' => $p['price'], 'quantity' => $item['qty']]);
         }
 
         return $cartItems;
@@ -49,20 +51,16 @@ class CartController extends Controller
         $cartId = $this->getCartId(); //userId or sessionId
         $p = Product::find($req['id']);
 
-        $cartItem=[
-            'user_id'=>$cartId,
-            'product_id'=>$p['id'],
-            'qty'=>$req['qty']
+        $cartItem = [
+            'user_id' => $cartId,
+            'product_id' => $p['id'],
+            'qty' => $req['qty']
         ];
 
         //ellenőrizni benne van-e már a termék a kosárban
-        $items=count(Cart::find($cartId,$p['id']));
+        $items = count(Cart::find($cartId, $p['id']));
 
-        // dd(count($items));
-
-        $items>0?'':Cart::create($cartItem);
-
-        //Cart::create($cartItem);
+        $items > 0 ? '' : Cart::create($cartItem);
 
         // $cart->add(array(
         //     'id' => $p['id'],
@@ -77,8 +75,14 @@ class CartController extends Controller
      */
     public function removeProd($id)
     {
-        $cart = $this->getCart();
-        $cart->remove($id);
+
+        $cartItem=Cart::find($this->getCartId(),$id);
+        //$cartItem->delete();
+        // $cart=$this->getCartContent($this->getCartId());
+
+
+        // $cart = $this->getCart();
+        // $cart->remove($id);
     }
 
     /**
@@ -92,6 +96,7 @@ class CartController extends Controller
             'id' => ['integer', 'required'],
             'qty' => ['integer', 'required', 'min:1']
         ]);
+
         $cart->update(
             $req['id'],
             array(

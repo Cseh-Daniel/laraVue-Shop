@@ -110,11 +110,11 @@ class ProductController extends Controller
     public function destroy(Request $request, string $id)
     {
         $p = Product::find($id);
-
-        (new CartController)->removeProd($id);
+        //dd('itt vagyok');
+        //(new CartController)->removeProd($id);
 
         if (Product::destroy($id) && $p['file_path']) {
-            $file = File::delete($p['file_path']);
+            File::delete($p['file_path']);
         }
         return redirect(url()->previous());
     }
@@ -144,19 +144,19 @@ class ProductController extends Controller
 
         // dd($req['price']['min'],$req['price']['max']);
 
-        if($req['price']['min'] > $req['price']['max']){
-            $tmp['min']=$req['price']['max'];
-            $tmp['max']=$req['price']['min'];
-        }else{
-            $tmp['min']=$req['price']['min'];
-            $tmp['max']=$req['price']['max'];
+        if ($req['price']['min'] > $req['price']['max']) {
+            $tmp['min'] = $req['price']['max'];
+            $tmp['max'] = $req['price']['min'];
+        } else {
+            $tmp['min'] = $req['price']['min'];
+            $tmp['max'] = $req['price']['max'];
         }
 
         $products = Product::query()->when(
             $tmp,
             function ($query, $price) {
                 // dd($price);
-                $query->whereBetween('price',[$price['min'],$price['max']]);
+                $query->whereBetween('price', [$price['min'], $price['max']]);
             }
         )
             ->paginate(4)
