@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Product;
 use App\Models\User;
-// use Darryldecode\Cart\Cart;
+use DeepCopy\Filter\KeepFilter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
 
 class CartController extends Controller
 {
@@ -94,24 +95,89 @@ class CartController extends Controller
         Cart::where('id', $req['id'])->update(['qty' => $req['qty']]);
     }
 
-    public function dropCart($userId)
+    /**
+     * Clears out the car for given IDs
+     * expects array as input
+     */
+    public function dropCart($userId = null)
+    {
+        $userId = !$userId ? $_REQUEST : $userId;
+        // dd($userId);
+        $txt = '';
+        foreach ($userId as $i) {
+            // Cart::where('user_id', $i)->delete();
+            $txt .= $i . ' ';
+        }
+        dd($txt);
+    }
+
+    public function changeCartForm($userId, $sessionId)
     {
 
-        $cart = $this->getCartContent($userId);
+        // dd($userId, $sessionId);
+        return "<h1>hello</h1>";
 
-        foreach ($cart as $i) {
-            Cart::destroy($i['id']);
+        // return inertia('Cart/CartChangeForm', [
+        //     'cart' => [
+        //         'old' => [
+        //             'items' => $this->getCartContent($userId),
+        //             'id' => $userId
+        //         ],
+        //         'new' => [
+        //             'items' => $this->getCartContent($sessionId),
+        //             'id' => $sessionId
+        //         ]
+        //     ]
+        // ]);
+
+        dd("change cart form");
+    }
+
+    public function changeCartOwner($sessionId = null)
+    {
+        if (!$sessionId) {
+            $req = $_REQUEST;
+
+            $this->dropCart([$req['dropId']]);
+
+            if ($req['dropId'] == auth()->user()->id) {
+                Cart::where('user_id', (string)$req['keepId'])->update(['user_id' => (string)auth()->user()->id]);
+            }
+        } else {
+
+            Cart::where('user_id', (string)$sessionId)->update(['user_id' => (string)auth()->user()->id]);
         }
     }
 
-    public function changeOwner($userId, $sessionId)
+    public function compareCarts($userId, $sessionId)
     {
+        return "<h1>compareCarts</h1>";
 
-        //$this->dropCart($userId);
-        $cart = $this->getCartContent($userId);
-        foreach ($cart as $i) {
-            Cart::where('user_id', (string)$userId)->update(['user_id' => (string)999]);
-            //string-re kell alakítani különben hiba, mivel a cartban a user_id string a session_id miatt
+        $sessionQty = count($this->getCartContent($sessionId));
+        $userQty = count($this->getCartContent(auth()->user()->id));
+
+        // dd($sessionQty,$userQty);
+
+        if ($sessionQty != 0 && $userQty != 0) {
+            dd('van mind2 kosárban');
+            $this->changeCartForm(auth()->user()->id, $sessionId);
+        } else if (count($this->getCartContent($sessionId)) != 0) {
+            dd('csak a session kosárban');
+
+            $this->changeCartOwner($sessionId);
+        } else {
+
+            /**
+             * checkSessionCart miatt ez az else már nembiztos hogy kell
+             */
+
+            return "<h1>Hello</h1>";
+            dd('vagy egyikse vagy csak a user kosárban');
         }
     }
+
+    public function test(){
+        return "<h1>Hello</h1>";
+    }
+
 }

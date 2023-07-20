@@ -21,13 +21,12 @@ use Illuminate\Support\Facades\Route;
 Route::redirect('/', "/home");
 
 Route::get('/home', [ProductController::class, 'index'])->name("home");
-// Route::get('/cart',[ProductController::class,'cartIndex']);
 
-// Route::get('/add-to-cart/{id}', [CartController::class, 'addToCart']);
 Route::get('/add-to-cart', [CartController::class, 'addToCart']);
 
 Route::get('/remove-from-cart/{id}', [CartController::class, 'removeProd']);
 Route::post('/cart-update', [CartController::class, 'updateCart']);
+
 
 
 Route::middleware("guest")->group(
@@ -51,7 +50,15 @@ Route::middleware("auth")->group(
         Route::post('/delete-product/{id}', [ProductController::class, 'destroy']);
 
         Route::post('/logout', [LoginController::class, 'destroy']);
+
+        // Route::get('/cartTest', [CartController::class, 'changeCartForm']);
+
     }
 );
 
-Route::get('/cartTest', [CartController::class, 'getCartContent']);
+Route::get('/cartTest', [CartController::class, 'changeCartForm']);
+Route::get('/keepCart',[CartController::class,'changeCartOwner']);
+
+Route::get('/deleteCart',[CartController::class,'dropCart']);
+
+Route::get('/test',[CartController::class,'test']);
