@@ -134,13 +134,10 @@ class CartController extends Controller
             $this->dropCart([$req['dropId']]);
 
             if ($req['dropId'] == auth()->user()->id) {
-                // Cart::where('user_id', (string)$req['keepId'])->update(['user_id' => (string)auth()->user()->id]);
                 $cartId = $req['keepId'];
             }
         }
-        //else {
         Cart::where('user_id', (string)$cartId)->update(['user_id' => (string)auth()->user()->id]);
-        //}
     }
 
     public function compareCarts($userId, $sessionId)
@@ -149,16 +146,12 @@ class CartController extends Controller
         $userQty = count($this->getCartContent(auth()->user()->id));
 
         if ($sessionQty != 0 && $userQty != 0) {
-            // dd('van mind2 kosárban');
 
             return $this->changeCartForm(auth()->user()->id, $sessionId);
         } else if ($sessionQty != 0) {
-            // dd('csak a session kosárban');
 
             $this->changeCartOwner($sessionId);
         }
-
-        // dd('return false');
 
         return false;
     }
@@ -168,6 +161,6 @@ class CartController extends Controller
      */
     public function test()
     {
-        return "<h1>Hello</h1>";
+        return inertia('popover');
     }
 }

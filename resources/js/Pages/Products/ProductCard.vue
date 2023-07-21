@@ -15,9 +15,9 @@ let props = defineProps({
     },
     edit: Boolean,
     product: Object
-})
+});
 
-let product = reactive(props.product)
+let product = reactive(props.product);
 
 function addToCart(prodId) {
 
@@ -63,8 +63,29 @@ function addToCart(prodId) {
             <Link v-if="props.edit" :href="'/edit-product/' + product.id" as="button" class="btn btn-outline-warning">
             Edit
             </Link>
-            <Link v-if="props.edit" :href="'/delete-product/' + product.id" as="button" class="btn btn-outline-danger"
-                method="post" preserve-scroll>remove</Link>
+
+            <button v-if="props.edit" class="btn btn-outline-danger" data-bs-toggle="modal"
+                data-bs-target="#deleteProduct">Remove</button>
+
+            <div v-if="props.edit" class="modal fade" id="deleteProduct">
+                <div class="modal-dialog">
+                    <div class="modal-content p-5">
+
+                        <h1>Remove {{ product.name }} ?</h1>
+
+                        <div class="d-flex gap-3 justify-content-center">
+                            <button class="btn btn-secondary" data-bs-toggle="modal"
+                                data-bs-target="#deleteProduct">Do not remove</button>
+
+                            <Link data-bs-toggle="modal"
+                                data-bs-target="#deleteProduct" :href="'/delete-product/' + product.id" as="button" class="btn btn-danger " method="post"
+                                preserve-scroll>Remove</Link>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
 
         </div>
 

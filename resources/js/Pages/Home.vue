@@ -37,7 +37,8 @@ watch(() => search.name,
         (value) => {
             if (value != null) {
                 router.get('/home', { name: value }, { replace: true, preserveState: true });
-                search.price = null;
+                search.price.max = null;
+                search.price.min = null;
                 sort.value.value = '';
 
             }
@@ -46,7 +47,7 @@ watch(() => search.name,
 watch(() => search.price,
     debounce(
         (value) => {
-            if (value != null) {
+            if (value.min != null && value.max!=null) {
                 router.get('/home', { price: value }, { replace: true, preserveState: true });
                 search.name = null;
                 sort.value.value = '';
@@ -133,7 +134,7 @@ function sorter() {
     </div>
 
 
-    <ProductList @nameSearch="console.log('keresés')" :items="usePage().props.products.data" :col-number=2 :key="search" />
+    <ProductList :items="usePage().props.products.data" :col-number=2 :key="search" />
 
     <div class="d-flex justify-content-center align-items-center">
         <Pagination :links="usePage().props.products.links"></Pagination>

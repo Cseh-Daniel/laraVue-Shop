@@ -7,8 +7,6 @@ import { usePage, router } from "@inertiajs/vue3";
 
 let auth = ref(usePage().props.auth.user ? true : false);
 
-const emit = defineEmits(['nameSearch', 'update:modelValue']);
-
 let props = defineProps({
     colNumber: {
         type: Number,
@@ -33,7 +31,7 @@ if (!usePage().props.products.data.length && page > 1) {
     <div class="container-fluid p-4">
 
         <div class="row justify-content-center align-items-center gap-2">
-            <ProductCard :product="i" :edit="auth" v-for="(i, index) in props.items" :key="i.id"></ProductCard>
+            <ProductCard :product="i" :edit="auth" v-for="i in props.items" :key="i.id"></ProductCard>
         </div>
 
     </div>
