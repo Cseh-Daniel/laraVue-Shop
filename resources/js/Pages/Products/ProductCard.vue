@@ -69,16 +69,19 @@ function addToCart(prodId) {
 
             <div v-if="props.edit" class="modal fade" id="deleteProduct">
                 <div class="modal-dialog">
-                    <div class="modal-content p-5">
+                    <div class="modal-content p-1">
 
-                        <h1>Remove {{ product.name }} ?</h1>
+                        <div class="modal-header">
+                            <h1>Remove {{ product.name }} ?</h1>
+                        </div>
 
-                        <div class="d-flex gap-3 justify-content-center">
-                            <button class="btn btn-secondary" data-bs-toggle="modal"
-                                data-bs-target="#deleteProduct">Do not remove</button>
+                        <div class="d-flex gap-3 justify-content-center p-3">
 
-                            <Link data-bs-toggle="modal"
-                                data-bs-target="#deleteProduct" :href="'/delete-product/' + product.id" as="button" class="btn btn-danger " method="post"
+                            <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#deleteProduct">Do not
+                                remove</button>
+
+                            <Link data-bs-toggle="modal" data-bs-target="#deleteProduct"
+                                :href="'/delete-product/' + product.id" as="button" class="btn btn-danger " method="post"
                                 preserve-scroll>Remove</Link>
                         </div>
                     </div>

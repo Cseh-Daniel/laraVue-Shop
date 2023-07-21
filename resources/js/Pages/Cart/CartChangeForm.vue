@@ -51,7 +51,30 @@ function deleteBoth() {
             <div class="d-flex justify-content-evenly">
                 <button class="btn btn-primary" @click="keepCart(userId)">Keep old</button>
                 <button class="btn btn-primary" @click="keepCart(sessionId)">Keep new</button>
-                <button class="btn btn-danger" @click="deleteBoth()">Delete Both</button>
+
+                <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteBoth">Delete
+                    Both</button>
+
+                <div class="modal fade" id="deleteBoth">
+                    <div class="modal-dialog">
+                        <div class="modal-content p-4">
+                            <div class="modal-header">
+                                <h2>Delete both carts?</h2>
+                            </div>
+
+
+
+                            <div class="d-flex gap-3 justify-content-center p-3">
+                                <button class="btn btn-secondary" data-bs-toggle="modal"
+                                    data-bs-target="#deleteBoth">Cancel</button>
+
+                                <button class="btn btn-danger" @click="deleteBoth()">Delete Both</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
                 <!-- danger-hez modal? -->
             </div>
         </div>
