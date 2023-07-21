@@ -3,13 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
-use App\Models\Product;
-use App\Models\User;
-use DeepCopy\Filter\KeepFilter;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
-use Inertia\Inertia;
 
 class CartController extends Controller
 {
@@ -23,7 +18,7 @@ class CartController extends Controller
     }
 
     /**
-     * Gives back the product information for the cart of the active user.
+     * Gives back the product information for the cart
      */
     public function getCartContent($userId)
     {
@@ -58,20 +53,20 @@ class CartController extends Controller
         ]);
 
         $userId = $this->getCartId(); //userId or sessionId
-        $p = Product::find($req['id']);
-
-        $cartItem = [
-            'user_id' => $userId,
-            'product_id' => $p['id'],
-            'qty' => $req['qty']
-        ];
 
         //ellenőrizni benne van-e már a termék a kosárban
-        $items = Cart::getItems($userId, $p['id']);
+        $items = Cart::getItems($userId, $req['id']);
+
         if (count($items) > 0) {
 
             Cart::where('id', $items[0]->id)->update(['qty' => $items[0]->qty + $req['qty']]);
         } else {
+
+            $cartItem = [
+                'user_id' => $userId,
+                'product_id' => $req['id'],
+                'qty' => $req['qty']
+            ];
 
             Cart::create($cartItem);
         }
@@ -110,6 +105,10 @@ class CartController extends Controller
         }
     }
 
+
+    /**
+     * Shows the form if user had products in both profile cart and guest user cart
+     */
     public function changeCartForm($userId, $sessionId)
     {
         return inertia('Cart/CartChangeForm', [
@@ -126,6 +125,9 @@ class CartController extends Controller
         ]);
     }
 
+    /**
+     * Change the cart owner
+     */
     public function changeCartOwner($cartId = null)
     {
         if (!$cartId) {
@@ -140,7 +142,14 @@ class CartController extends Controller
         Cart::where('user_id', (string)$cartId)->update(['user_id' => (string)auth()->user()->id]);
     }
 
-    public function compareCarts($userId, $sessionId)
+
+    /**
+     * Compares the guest and profile carts.
+     * If both has items returns form.
+     * Only guest cart has item they will be assigned for the logged in user
+     * If both empty returns false
+     */
+    public function compareCarts($sessionId)
     {
         $sessionQty = count($this->getCartContent($sessionId));
         $userQty = count($this->getCartContent(auth()->user()->id));
@@ -154,13 +163,5 @@ class CartController extends Controller
         }
 
         return false;
-    }
-
-    /**
-     * csak teszt
-     */
-    public function test()
-    {
-        return inertia('popover');
     }
 }

@@ -17,6 +17,19 @@ class ProductController extends Controller
     public function index(Request $req)
     {
 
+        $products=$this->sortAndFilter($req);
+
+        return inertia('Home', ['products' => $products,
+        'cart' => [
+            'items'=>(new CartController)->getCartContent((new CartController)->getCartId()),
+            'total'=>(new CartController)->getCartTotal()
+            ]]);
+    }
+
+    /**
+     * Returns sorted or filtered list of products
+     */
+    public function sortAndFilter($req){
         if ($req->has('name') && $req->has('sort')) {
 
             $products = $this->filterByNameSorter($req);
@@ -33,14 +46,7 @@ class ProductController extends Controller
 
             $products = Product::Paginate(4);
         }
-
-        // $cart = (new CartController)->getCartContent();
-
-        return inertia('Home', ['products' => $products,
-        'cart' => [
-            'items'=>(new CartController)->getCartContent((new CartController)->getCartId()),
-            'total'=>(new CartController)->getCartTotal()
-            ]]);
+        return $products;
     }
 
     /**
@@ -148,9 +154,7 @@ class ProductController extends Controller
     public function filterByPrice($req)
     {
 
-        // dd($req['price']['min'],$req['price']['max']);
-
-        if ($req['price']['min'] > $req['price']['max']) {
+        if ($req['price']['min'] > $req['price']['max'] && ($req['price']['min'] && $req['price']['max']) ) {
             $tmp['min'] = $req['price']['max'];
             $tmp['max'] = $req['price']['min'];
         } else {
@@ -161,7 +165,10 @@ class ProductController extends Controller
         $products = Product::query()->when(
             $tmp,
             function ($query, $price) {
-                // dd($price);
+
+                $price['min']=!$price['min']?0:$price['min'];
+                $price['max']=!$price['max']?Product::max('price'):$price['max'];
+
                 $query->whereBetween('price', [$price['min'], $price['max']]);
             }
         )

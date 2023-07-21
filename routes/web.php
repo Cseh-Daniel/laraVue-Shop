@@ -51,14 +51,9 @@ Route::middleware("auth")->group(
 
         Route::post('/logout', [LoginController::class, 'destroy']);
 
-        // Route::get('/cartTest', [CartController::class, 'changeCartForm']);
+        Route::get('/keepCart',[CartController::class,'changeCartOwner']);
+        Route::get('/deleteCart',[CartController::class,'dropCart']);
 
     }
 );
 
-Route::get('/cartTest', [CartController::class, 'changeCartForm']);
-Route::get('/keepCart',[CartController::class,'changeCartOwner']);
-
-Route::get('/deleteCart',[CartController::class,'dropCart']);
-
-Route::get('/test',[CartController::class,'test']);

@@ -24,7 +24,6 @@ class LoginController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    // public function store(Request $request): RedirectResponse
     public function store(Request $request)
     {
 
@@ -33,20 +32,12 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
 
-        $sessionId = Session::getId(); //régi session ahol a kosár elérhető még
+        $sessionId = Session::getId();
 
-        if (auth()->attempt($credentials)) { //itt már új session van
-            // return "<h1>Helloooo</h1>";
+        if (auth()->attempt($credentials)) {
             $request->session()->regenerate();
 
-            /**
-             * itt kell ellenőrizzük h van-e session kosárban valami
-             * if( (new CartController)->checkSessionCart($sessionId) ){
-             *  return (new CartController)->compareCarts(auth()->user()->id, $sessionId);
-             * }
-             */
-
-            $cartChange=(new CartController)->compareCarts(auth()->user()->id, $sessionId);
+            $cartChange=(new CartController)->compareCarts($sessionId);
             return !$cartChange?redirect()->intended():$cartChange;
         }
 

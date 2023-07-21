@@ -68,14 +68,12 @@ function deleteBoth() {
                                 <button class="btn btn-secondary" data-bs-toggle="modal"
                                     data-bs-target="#deleteBoth">Cancel</button>
 
-                                <button class="btn btn-danger" @click="deleteBoth()">Delete Both</button>
+                                <button class="btn btn-danger" @click="deleteBoth()" data-bs-toggle="modal"
+                                    data-bs-target="#deleteBoth">Delete Both</button>
                             </div>
                         </div>
                     </div>
                 </div>
-
-
-                <!-- danger-hez modal? -->
             </div>
         </div>
     </div>
