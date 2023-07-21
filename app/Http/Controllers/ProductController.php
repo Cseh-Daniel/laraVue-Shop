@@ -6,7 +6,6 @@ use Inertia\Inertia;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -81,19 +80,6 @@ class ProductController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        $product = Product::find($id);
-
-        return inertia("Products/Create", [
-            "title" => "Edit Product",
-            "product" => $product
-        ]);
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
@@ -116,6 +102,19 @@ class ProductController extends Controller
         $file->move('uploads/prod', $fileName);
 
         return Inertia::location('/');
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        $product = Product::find($id);
+
+        return inertia("Products/Create", [
+            "title" => "Edit Product",
+            "product" => $product
+        ]);
     }
 
     /**
