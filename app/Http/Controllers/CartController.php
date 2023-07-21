@@ -33,6 +33,9 @@ class CartController extends Controller
         return $cartItems;
     }
 
+    /**
+     * returns the total value for the active user
+     */
     public function getCartTotal()
     {
 
@@ -102,82 +105,69 @@ class CartController extends Controller
     public function dropCart($userId = null)
     {
         $userId = !$userId ? $_REQUEST : $userId;
-        // dd($userId);
-        $txt = '';
         foreach ($userId as $i) {
-            // Cart::where('user_id', $i)->delete();
-            $txt .= $i . ' ';
+            Cart::where('user_id', $i)->delete();
         }
-        dd($txt);
     }
 
     public function changeCartForm($userId, $sessionId)
     {
-
-        // dd($userId, $sessionId);
-        return "<h1>hello</h1>";
-
-        // return inertia('Cart/CartChangeForm', [
-        //     'cart' => [
-        //         'old' => [
-        //             'items' => $this->getCartContent($userId),
-        //             'id' => $userId
-        //         ],
-        //         'new' => [
-        //             'items' => $this->getCartContent($sessionId),
-        //             'id' => $sessionId
-        //         ]
-        //     ]
-        // ]);
-
-        dd("change cart form");
+        return inertia('Cart/CartChangeForm', [
+            'cart' => [
+                'old' => [
+                    'items' => $this->getCartContent($userId),
+                    'id' => $userId
+                ],
+                'new' => [
+                    'items' => $this->getCartContent($sessionId),
+                    'id' => $sessionId
+                ]
+            ]
+        ]);
     }
 
-    public function changeCartOwner($sessionId = null)
+    public function changeCartOwner($cartId = null)
     {
-        if (!$sessionId) {
+        if (!$cartId) {
             $req = $_REQUEST;
 
             $this->dropCart([$req['dropId']]);
 
             if ($req['dropId'] == auth()->user()->id) {
-                Cart::where('user_id', (string)$req['keepId'])->update(['user_id' => (string)auth()->user()->id]);
+                // Cart::where('user_id', (string)$req['keepId'])->update(['user_id' => (string)auth()->user()->id]);
+                $cartId = $req['keepId'];
             }
-        } else {
-
-            Cart::where('user_id', (string)$sessionId)->update(['user_id' => (string)auth()->user()->id]);
         }
+        //else {
+        Cart::where('user_id', (string)$cartId)->update(['user_id' => (string)auth()->user()->id]);
+        //}
     }
 
     public function compareCarts($userId, $sessionId)
     {
-        return "<h1>compareCarts</h1>";
-
         $sessionQty = count($this->getCartContent($sessionId));
         $userQty = count($this->getCartContent(auth()->user()->id));
 
-        // dd($sessionQty,$userQty);
-
         if ($sessionQty != 0 && $userQty != 0) {
-            dd('van mind2 kosárban');
-            $this->changeCartForm(auth()->user()->id, $sessionId);
-        } else if (count($this->getCartContent($sessionId)) != 0) {
-            dd('csak a session kosárban');
+            // dd('van mind2 kosárban');
+
+            return $this->changeCartForm(auth()->user()->id, $sessionId);
+        } else if ($sessionQty != 0) {
+            // dd('csak a session kosárban');
 
             $this->changeCartOwner($sessionId);
-        } else {
-
-            /**
-             * checkSessionCart miatt ez az else már nembiztos hogy kell
-             */
-
-            return "<h1>Hello</h1>";
-            dd('vagy egyikse vagy csak a user kosárban');
         }
+
+        // dd('return false');
+
+        return false;
     }
 
-    public function test(){
+    /**
+     * csak teszt
+     */
+    public function test()
+    {
         return "<h1>Hello</h1>";
     }
-
 }

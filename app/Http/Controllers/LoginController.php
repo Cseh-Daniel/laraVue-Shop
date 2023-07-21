@@ -37,7 +37,7 @@ class LoginController extends Controller
 
         if (auth()->attempt($credentials)) { //itt már új session van
             // return "<h1>Helloooo</h1>";
-            // $request->session()->regenerate();
+            $request->session()->regenerate();
 
             /**
              * itt kell ellenőrizzük h van-e session kosárban valami
@@ -45,7 +45,9 @@ class LoginController extends Controller
              *  return (new CartController)->compareCarts(auth()->user()->id, $sessionId);
              * }
              */
-            return redirect()->intended();
+
+            $cartChange=(new CartController)->compareCarts(auth()->user()->id, $sessionId);
+            return !$cartChange?redirect()->intended():$cartChange;
         }
 
         return back()->withErrors([
