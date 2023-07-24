@@ -8,10 +8,6 @@ import { usePage, router } from "@inertiajs/vue3";
 let auth = ref(usePage().props.auth.user ? true : false);
 
 let props = defineProps({
-    colNumber: {
-        type: Number,
-        default: 2
-    },
     items: Array,
 })
 
@@ -31,7 +27,7 @@ if (!usePage().props.products.data.length && page > 1) {
     <div class="container-fluid p-4">
 
         <div class="row justify-content-center align-items-center gap-2">
-            <ProductCard :product="i" :edit="auth" v-for="i in props.items" :key="i.id"></ProductCard>
+            <ProductCard :edit="auth" v-for="i in props.items" :key="i.id" :product="i"></ProductCard>
         </div>
 
     </div>

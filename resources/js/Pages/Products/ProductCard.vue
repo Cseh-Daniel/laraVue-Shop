@@ -3,16 +3,12 @@
 import { library } from '@fortawesome/fontawesome-svg-core'
 /* import font awesome icon component */
 import { faImage, faCartPlus } from '@fortawesome/free-solid-svg-icons'
-import { router } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
 import { reactive } from 'vue';
 
 library.add(faImage, faCartPlus);
 
 let props = defineProps({
-    imgSrc: {
-        type: String,
-        default: null
-    },
     edit: Boolean,
     product: Object
 });
@@ -20,13 +16,12 @@ let props = defineProps({
 let product = reactive(props.product);
 
 function addToCart(prodId) {
-
     let qty = document.getElementById(prodId + '-qty');
-    console.log(prodId, qty.value);
     router.get("/add-to-cart", { id: prodId, qty: qty.value }, { preserveScroll: true });
 }
 
 </script>
+
 
 <template>
     <div class="col-md-4 col-12 border text-center shadow rounded-4 mb-3 p-4">
@@ -65,9 +60,11 @@ function addToCart(prodId) {
             </Link>
 
             <button v-if="props.edit" class="btn btn-outline-danger" data-bs-toggle="modal"
-                data-bs-target="#deleteProduct">Remove</button>
+                :data-bs-target="'#deleteProduct-' + this.$.vnode.key">Remove
+            </button>
 
-            <div v-if="props.edit" class="modal fade" id="deleteProduct">
+
+            <div v-if="props.edit" class="modal fade" :id="'deleteProduct-' + this.$.vnode.key">
                 <div class="modal-dialog">
                     <div class="modal-content p-1">
 
@@ -77,10 +74,11 @@ function addToCart(prodId) {
 
                         <div class="d-flex gap-3 justify-content-center p-3">
 
-                            <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#deleteProduct">Do not
+                            <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-config={backdrop:true}
+                                :data-bs-target="'#deleteProduct-' + this.$.vnode.key">Do not
                                 remove</button>
 
-                            <Link data-bs-toggle="modal" data-bs-target="#deleteProduct"
+                            <Link data-bs-toggle="modal" :data-bs-target="'#deleteProduct-' + this.$.vnode.key"
                                 :href="'/delete-product/' + product.id" as="button" class="btn btn-danger " method="post"
                                 preserve-scroll>Remove</Link>
                         </div>

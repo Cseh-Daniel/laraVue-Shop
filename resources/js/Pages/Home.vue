@@ -30,8 +30,6 @@ let auth = ref(usePage().props.auth.user ? true : false);
 let search = reactive(props.filters);
 let sort = ref(props.sort);
 
-let cart = usePage().props.cart;
-
 watch(() => search.name,
     debounce(
         (value) => {
@@ -85,7 +83,6 @@ function sorter() {
             <div class="d-flex col-3 gap-md-3 gap-1">
                 <input type="number" class="form-control" v-model="search.price.min" placeholder="Price min">
                 <input type="number" class="form-control" v-model="search.price.max" placeholder="Price max">
-
             </div>
 
             <div class="col-3">
@@ -116,7 +113,7 @@ function sorter() {
                     </Button>
                     <div class="dropdown-menu container shadow">
 
-                        <CartItems v-for="cartProd in cart.items" :items="cartProd" />
+                        <CartItems v-for="cartProd in usePage().props.cart.items" :items="cartProd" />
                         <div class="d-flex justify-content-center">
                             <div class="w-75">
                                 <hr>
