@@ -138,8 +138,16 @@ class ProductController extends Controller
      */
     public function filterByName($req)
     {
+        $products = Product::query()->when(
+            $req['name'],
+            function ($query, $name) {
+                $query->where('name', 'like', '%' . $name . '%');
+            }
+        )
+            ->paginate(4)
+            ->withQueryString();
 
-        return Product::filterByName($req['name'])->paginate(4)->withQueryString();
+        return $products;
     }
 
     /**
@@ -147,17 +155,28 @@ class ProductController extends Controller
      */
     public function filterByPrice($req)
     {
-        $min = isset($req['price']['min']) && $req['price']['min'] != null ? $req['price']['min'] : 0;
-        $max = isset($req['price']['max']) && $req['price']['max'] != null ? $req['price']['max'] : Product::max('price');
 
-        if ($min > $max) {
-
-            $tmp = $min;
-            $min = $max;
-            $max = $tmp;
+        if ($req['price']['min'] > $req['price']['max'] && ($req['price']['min'] && $req['price']['max'])) {
+            $tmp['min'] = $req['price']['max'];
+            $tmp['max'] = $req['price']['min'];
+        } else {
+            $tmp['min'] = $req['price']['min'];
+            $tmp['max'] = $req['price']['max'];
         }
 
-        return Product::filterByPrice($min, $max)->paginate(4)->withQueryString();
+        $products = Product::query()->when(
+            $tmp,
+            function ($query, $price) {
+
+                $price['min'] = !$price['min'] ? 0 : $price['min'];
+                $price['max'] = !$price['max'] ? Product::max('price') : $price['max'];
+
+                $query->whereBetween('price', [$price['min'], $price['max']]);
+            }
+        )
+            ->paginate(4)
+            ->withQueryString();
+        return $products;
     }
 
     /**
@@ -193,14 +212,10 @@ class ProductController extends Controller
         return $products;
     }
 
-    public function sorter()
-    {
-    }
-
     public function test()
     {
         // dd(Product::filterByName("product")->get());
         // dd(Product::filterByName("product")->orderBy('price','asc')->get());
-        return inertia('test', ['query' => Product::filterByPrice(1, 2000)->get()]);
+        return inertia('test',['query'=>Product::filterByPrice(1,2000)->get()]);
     }
 }

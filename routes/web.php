@@ -57,3 +57,4 @@ Route::middleware("auth")->group(
     }
 );
 
+Route::get('/test',[ProductController::class,'test']);

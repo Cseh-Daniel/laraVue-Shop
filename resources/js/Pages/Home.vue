@@ -45,7 +45,7 @@ watch(() => search.name,
 watch(() => search.price,
     debounce(
         (value) => {
-            if (value.min != null || value.max!=null && search.name==null) {
+            if (value.min != null || value.max != null && search.name == null) {
                 router.get('/home', { price: value }, { replace: true, preserveState: true });
                 search.name = null;
                 sort.value.value = '';
@@ -125,8 +125,6 @@ function sorter() {
                     </div>
                 </div>
             </div>
-
-
         </div>
     </div>
 
