@@ -16,7 +16,7 @@ class ProductController extends Controller
     public function index(Request $req)
     {
 
-        $products = $this->sortAndFilter($req);
+        $products = $this->sortAndFilter($req)?$this->sortAndFilter($req)->paginate(4)->withQueryString():Product::Paginate(4);
 
         return inertia('Home', [
             'products' => $products,
@@ -35,6 +35,10 @@ class ProductController extends Controller
         if ($req->has('name') && $req->has('sort')) {
 
             $products = $this->filterByNameSorter($req);
+
+            //$order=??sortOrder??($req['sort']);
+            //$products=$this->filterByName('xy')->orderBy($order,$sort)
+            //$products=$this->filterByName('xy')->orderBy($order,$sort)
         } else if ($req->has('name')) {
 
             $products = $this->filterByName($req);
@@ -46,7 +50,7 @@ class ProductController extends Controller
             $products = $this->sort($req);
         } else {
 
-            $products = Product::Paginate(4);
+            $products = false;
         }
         return $products;
     }
@@ -123,7 +127,7 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, string $id)
+    public function destroy(Request $request, string $id)//kell a Request?
     {
         $p = Product::find($id);
 
@@ -139,7 +143,7 @@ class ProductController extends Controller
     public function filterByName($req)
     {
 
-        return Product::filterByName($req['name'])->paginate(4)->withQueryString();
+        return Product::filterByName($req['name']);//->paginate(4)->withQueryString();
     }
 
     /**
@@ -157,7 +161,7 @@ class ProductController extends Controller
             $max = $tmp;
         }
 
-        return Product::filterByPrice($min, $max)->paginate(4)->withQueryString();
+        return Product::filterByPrice($min, $max);//->paginate(4)->withQueryString();
     }
 
     /**
@@ -167,15 +171,10 @@ class ProductController extends Controller
     {
         $sort = str_ends_with($req['sort'], 'Desc') ? "Desc" : "Asc";
         $order = str_starts_with($req['sort'], 'price') ? 'price' : 'name';
-
-        $products = Product::query()->when(
-            $req['name'],
-            function ($query, $name) {
-                $query->where('name', 'like', '%' . $name . '%');
-            }
-        )->orderBy($order, $sort)
-            ->paginate(4)
-            ->withQueryString();
+/**
+ * kód duplikáció sorbarendezéshez
+ */
+        $products = Product::filterByName($req['name'])->orderBy($order, $sort);//->paginate(4)->withQueryString();
 
         return $products;
     }
@@ -187,8 +186,11 @@ class ProductController extends Controller
     {
         $sort = str_ends_with($req['sort'], 'Desc') ? "Desc" : "Asc";
         $order = str_starts_with($req['sort'], 'price') ? 'price' : 'name';
-
-        $products = Product::orderBy($order, $sort)->Paginate(4)->withQueryString();
+        //esetleg ezeket se egy fgv-be?
+/**
+ * kód duplikáció sorbarendezéshez
+ */
+        $products = Product::orderBy($order, $sort);//->Paginate(4)->withQueryString();
 
         return $products;
     }
@@ -201,6 +203,9 @@ class ProductController extends Controller
     {
         // dd(Product::filterByName("product")->get());
         // dd(Product::filterByName("product")->orderBy('price','asc')->get());
-        return inertia('test', ['query' => Product::filterByPrice(1, 2000)->get()]);
+
+        //filter by both name and price
+        return inertia('test', ['query' => Product::filterByPrice(1, 5000)->where('name','like','%product%')->get()]);
+
     }
 }

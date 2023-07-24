@@ -35,9 +35,9 @@ watch(() => search.name,
         (value) => {
             if (value != null) {
                 router.get('/home', { name: value }, { replace: true, preserveState: true });
-                search.price.max = null;
-                search.price.min = null;
-                sort.value.value = '';
+                // search.price.max = null;
+                // search.price.min = null;
+                // sort.value.value = '';
 
             }
         }, 500));
@@ -45,29 +45,44 @@ watch(() => search.name,
 watch(() => search.price,
     debounce(
         (value) => {
-            if (value.min != null || value.max != null && search.name == null) {
+            if (value.min != null || value.max != null) {
                 router.get('/home', { price: value }, { replace: true, preserveState: true });
-                search.name = null;
-                sort.value.value = '';
+                // search.name = null;
+                // sort.value.value = '';
             }
         }, 500), { deep: true });
 
 
 function sorter() {
 
-    let nameSort = new URL(location.href).searchParams.has('name');
-    nameSort = nameSort ? new URL(location.href).searchParams.get('name') : '';
+    let nameFilter = new URL(location.href).searchParams.has('name');
+    let priceMin = new URL(location.href).searchParams.has('price[min]');
+    let priceMax = new URL(location.href).searchParams.has('price[max]');
 
-    let value = sort.value.value;
-    if (!nameSort) {
-        router.get('/home', { sort: value }, { replace: true, preserveState: true });
-    } else {
-        router.get('/home', { sort: value, name: nameSort }, { replace: true, preserveState: true });
+    let data = {
+        sort: sort.value.value
+    };
+
+    if (nameFilter) {
+        // router.get('/home', { sort: sortValue }, { replace: true, preserveState: true });//két kód eléggé ugyan az
+        data.name = new URL(location.href).searchParams.get('name');
     }
 
+    if (priceMin) {
+        data.priceMin = new URL(location.href).searchParams.get('price[min]');
+    }
+
+    if (priceMax) {
+        data.priceMax = new URL(location.href).searchParams.get('price[max]');
+    }
+
+
+    console.log(data);
+
+    // router.get('/home', data, { replace: true, preserveState: true });
+
+
 }
-
-
 </script>
 
 <template>
@@ -77,7 +92,9 @@ function sorter() {
         <div class="row justify-content-center">
 
             <div class="col-3">
+
                 <input type="text" class="form-control" v-model="search.name" id="nameSearch" placeholder="search for Name">
+
             </div>
 
             <div class="d-flex col-3 gap-md-3 gap-1">
