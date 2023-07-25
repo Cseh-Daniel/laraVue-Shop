@@ -3,7 +3,7 @@
 import { library } from '@fortawesome/fontawesome-svg-core'
 /* import font awesome icon component */
 import { faImage, faCartPlus } from '@fortawesome/free-solid-svg-icons'
-import { router, usePage } from '@inertiajs/vue3';
+import { router } from '@inertiajs/vue3';
 import { reactive } from 'vue';
 
 library.add(faImage, faCartPlus);

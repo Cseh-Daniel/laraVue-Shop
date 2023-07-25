@@ -6,7 +6,7 @@ import { Head } from "@inertiajs/vue3";
 
 <template>
     <Head>
-        <title>Shop</title>
+        <title>Shop App</title>
         <meta name="description" content="" head-key="description">
     </Head>
     <header>

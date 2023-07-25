@@ -2,7 +2,7 @@
 
 import ProductCard from "./ProductCard.vue";
 import { ref } from "vue";
-import { usePage, router } from "@inertiajs/vue3";
+import { usePage } from "@inertiajs/vue3";
 
 
 let auth = ref(usePage().props.auth.user ? true : false);
@@ -10,15 +10,6 @@ let auth = ref(usePage().props.auth.user ? true : false);
 let props = defineProps({
     items: Array,
 })
-
-
-let page = new URL(location.href).searchParams.get('page');
-
-if (!usePage().props.products.data.length && page > 1) {
-    router.get("/home", { page: 1 }, { replace: true })
-}
-
-
 </script>
 
 

@@ -34,13 +34,15 @@ class ProductController extends Controller
     {
         $sortOrder = $req['sort'] != null ? $this->sortOrder($req) : null;
 
-        if (($req['priceMin'] != null || $req['priceMax'] != null) && $req['name'] != null && $req['sort'] != null) {
+        $boolPrice = $req['priceMin'] != null || $req['priceMax'] != null;
+
+        if ($boolPrice && $req['name'] != null && $req['sort'] != null) {
 
             $products = $this->filterByPrice($req)->where('name', 'like', '%' . $req['name'] . '%')->orderBy($sortOrder[0], $sortOrder[1]);
-        } else if (($req['priceMin'] != null || $req['priceMax'] != null) && $req['name'] != null) {
+        } else if ($boolPrice && $req['name'] != null) {
 
             $products = $this->filterByPrice($req)->where('name', 'like', '%' . $req['name'] . '%');
-        } else if (($req['priceMin'] != null || $req['priceMax'] != null) && $sortOrder) {
+        } else if ($boolPrice && $sortOrder) {
 
             $products = $this->filterByPrice($req)->orderBy($sortOrder[0], $sortOrder[1]);
         } else if ($req['name'] && $sortOrder) {
@@ -49,7 +51,7 @@ class ProductController extends Controller
         } else if ($req['name']) {
 
             $products = Product::filterByName($req['name']);
-        } else if (($req['priceMin'] != null || $req['priceMax'] != null)) {
+        } else if ($boolPrice) {
 
             $products = $this->filterByPrice($req);
         } else if ($req['sort']) {
@@ -163,8 +165,8 @@ class ProductController extends Controller
 
     /**
      * returns an array
-     * first element: order by price or name,
-     * second element: sorting asc / desc
+     * first element: order by price/name,
+     * second element: sorting asc/desc
      */
     public function sortOrder($req)
     {

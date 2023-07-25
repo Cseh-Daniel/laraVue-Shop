@@ -30,6 +30,9 @@ let auth = ref(usePage().props.auth.user ? true : false);
 let search = reactive(props.filters);
 let sort = ref(props.sort);
 
+/**
+ * filtering product list by name
+ */
 watch(() => search.name,
     debounce(
         (value) => {
@@ -39,6 +42,9 @@ watch(() => search.name,
 
         }, 500));
 
+/**
+ * filter product list by price range
+ */
 watch(() => search.price,
     debounce(
         (value) => {
@@ -52,6 +58,9 @@ watch(() => search.price,
         }, 500), { deep: true });
 
 
+/**
+ * Check QueryString for existing parameters
+ */
 function getQueryData() {
 
     let data = {
@@ -66,13 +75,13 @@ function getQueryData() {
     data.priceMax = new URL(location.href).searchParams.has('priceMax') ? new URL(location.href).searchParams.get('priceMax') : null;
     data.sort = new URL(location.href).searchParams.has('sort') ? sort.value.value : null;
 
-    console.log(data);
-
     return data;
 
 }
 
-
+/**
+ * Sorting the product list
+ */
 function sorter() {
 
     let data = getQueryData();

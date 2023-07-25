@@ -4,7 +4,6 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RegisterController;
-use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,6 +24,7 @@ Route::get('/home', [ProductController::class, 'index'])->name("home");
 Route::get('/add-to-cart', [CartController::class, 'addToCart']);
 
 Route::get('/remove-from-cart/{id}', [CartController::class, 'removeProd']);
+
 Route::post('/cart-update', [CartController::class, 'updateCart']);
 
 
@@ -56,5 +56,3 @@ Route::middleware("auth")->group(
 
     }
 );
-
-Route::get('/test',[ProductController::class,'test']);

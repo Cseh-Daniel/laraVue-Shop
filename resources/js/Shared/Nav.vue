@@ -1,10 +1,15 @@
 <script setup>
 import NavLink from './NavLink.vue';
-import { Link } from '@inertiajs/vue3';
-import { usePage } from '@inertiajs/vue3';
+import { usePage, router, Link } from '@inertiajs/vue3';
+import { ref } from "vue";
 
-defineProps({
-})
+let boolLogout = ref(false);
+
+
+function logoutProcess() {
+    boolLogout.value=true;
+    router.post("/logout");
+}
 
 </script>
 
@@ -12,9 +17,9 @@ defineProps({
     <nav class="navbar navbar-expand-lg">
 
         <div class="container-fluid">
-            <Link class="navbar-brand" href="/">
-            <slot></slot>
-            </Link>
+            <a class="navbar-brand" href="/">
+                <slot></slot>
+            </a>
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -26,9 +31,7 @@ defineProps({
                 <span class="d-flex gap-2" v-if="usePage().props.auth.user">
                     Welcome, {{ usePage().props.auth.user.username }}
                     <h6>
-                        <form action="/logout" method="post">
-                            <Link href="/logout" method="post" class="badge bg-secondary mt-1" as="span">Logout</Link>
-                        </form>
+                        <Button class="badge bg-secondary mt-1" :disabled="boolLogout" @click="logoutProcess">Logout</Button>
                     </h6>
                 </span>
                 <span class="d-flex gap-2" v-else>
