@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class CartController extends Controller
@@ -34,12 +35,19 @@ class CartController extends Controller
     public function getCartTotal()
     {
 
-        $cartTotal = $this->getCartContent($this->getCartId());
-        $total = 0;
-        foreach ($cartTotal as $i) {
-            $total += $i['price'] * $i['qty'];
-        }
-        return $total;
+        $query = DB::select(
+            "
+        select sum(qty*price) as total
+        from products, carts
+        where
+        products.id = carts.product_id
+        and
+        carts.user_id=:id
+        ",
+            ['id' => $this->getCartId()]
+        );
+
+        return $query[0]->total;
     }
 
     /**
@@ -52,9 +60,8 @@ class CartController extends Controller
             'qty' => ['integer', 'required', 'min:1']
         ]);
 
-        $userId = $this->getCartId(); //userId or sessionId
+        $userId = $this->getCartId();
 
-        //ellenőrizni benne van-e már a termék a kosárban
         $items = Cart::getItems($userId, $req['id']);
 
         if (count($items) > 0) {
@@ -164,5 +171,4 @@ class CartController extends Controller
 
         return false;
     }
-
 }

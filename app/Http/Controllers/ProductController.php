@@ -16,7 +16,7 @@ class ProductController extends Controller
     public function index(Request $req)
     {
 
-        $products = $this->sortAndFilter($req)?$this->sortAndFilter($req)->paginate(4)->withQueryString():Product::Paginate(4);
+        $products = $this->sortAndFilter($req) ? $this->sortAndFilter($req)->paginate(4)->withQueryString() : Product::Paginate(4);
 
         return inertia('Home', [
             'products' => $products,
@@ -32,25 +32,32 @@ class ProductController extends Controller
      */
     public function sortAndFilter($req)
     {
-        if ($req->has('name') && $req->has('sort')) {
+        $sortOrder = $req['sort'] != null ? $this->sortOrder($req) : null;
 
-            $products = $this->filterByNameSorter($req);
+        if (($req['priceMin'] != null || $req['priceMax'] != null) && $req['name'] != null && $req['sort'] != null) {
 
-            //$order=??sortOrder??($req['sort']);
-            //$products=$this->filterByName('xy')->orderBy($order,$sort)
-            //$products=$this->filterByName('xy')->orderBy($order,$sort)
-        } else if ($req->has('name')) {
+            $products = $this->filterByPrice($req)->where('name', 'like', '%' . $req['name'] . '%')->orderBy($sortOrder[0], $sortOrder[1]);
+        } else if (($req['priceMin'] != null || $req['priceMax'] != null) && $req['name'] != null) {
 
-            $products = $this->filterByName($req);
-        } else if ($req->has('price')) {
+            $products = $this->filterByPrice($req)->where('name', 'like', '%' . $req['name'] . '%');
+        } else if (($req['priceMin'] != null || $req['priceMax'] != null) && $sortOrder) {
+
+            $products = $this->filterByPrice($req)->orderBy($sortOrder[0], $sortOrder[1]);
+        } else if ($req['name'] && $sortOrder) {
+
+            $products = Product::filterByName($req['name'])->orderBy($sortOrder[0], $sortOrder[1]);
+        } else if ($req['name']) {
+
+            $products = Product::filterByName($req['name']);
+        } else if (($req['priceMin'] != null || $req['priceMax'] != null)) {
 
             $products = $this->filterByPrice($req);
-        } else if ($req->has('sort')) {
+        } else if ($req['sort']) {
 
-            $products = $this->sort($req);
+            $products = Product::orderBy($sortOrder[0], $sortOrder[1]);
         } else {
 
-            $products = false;
+            $products = null;
         }
         return $products;
     }
@@ -127,7 +134,7 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, string $id)//kell a Request?
+    public function destroy(string $id)
     {
         $p = Product::find($id);
 
@@ -138,21 +145,12 @@ class ProductController extends Controller
     }
 
     /**
-     * Filters products by name
-     */
-    public function filterByName($req)
-    {
-
-        return Product::filterByName($req['name']);//->paginate(4)->withQueryString();
-    }
-
-    /**
      * filters products by price
      */
     public function filterByPrice($req)
     {
-        $min = isset($req['price']['min']) && $req['price']['min'] != null ? $req['price']['min'] : 0;
-        $max = isset($req['price']['max']) && $req['price']['max'] != null ? $req['price']['max'] : Product::max('price');
+        $min = isset($req['priceMin']) && $req['priceMin'] != null ? $req['priceMin'] : 0;
+        $max = isset($req['priceMax']) && $req['priceMax'] != null ? $req['priceMax'] : Product::max('price');
 
         if ($min > $max) {
 
@@ -160,52 +158,18 @@ class ProductController extends Controller
             $min = $max;
             $max = $tmp;
         }
-
-        return Product::filterByPrice($min, $max);//->paginate(4)->withQueryString();
+        return Product::filterByPrice($min, $max);
     }
 
     /**
-     * Filters products by name and sorts by price or name
+     * returns an array
+     * first element: order by price or name,
+     * second element: sorting asc / desc
      */
-    public function filterByNameSorter($req)
+    public function sortOrder($req)
     {
         $sort = str_ends_with($req['sort'], 'Desc') ? "Desc" : "Asc";
         $order = str_starts_with($req['sort'], 'price') ? 'price' : 'name';
-/**
- * kód duplikáció sorbarendezéshez
- */
-        $products = Product::filterByName($req['name'])->orderBy($order, $sort);//->paginate(4)->withQueryString();
-
-        return $products;
-    }
-
-    /**
-     * sorts products by price or name
-     */
-    public function sort($req)
-    {
-        $sort = str_ends_with($req['sort'], 'Desc') ? "Desc" : "Asc";
-        $order = str_starts_with($req['sort'], 'price') ? 'price' : 'name';
-        //esetleg ezeket se egy fgv-be?
-/**
- * kód duplikáció sorbarendezéshez
- */
-        $products = Product::orderBy($order, $sort);//->Paginate(4)->withQueryString();
-
-        return $products;
-    }
-
-    public function sorter()
-    {
-    }
-
-    public function test()
-    {
-        // dd(Product::filterByName("product")->get());
-        // dd(Product::filterByName("product")->orderBy('price','asc')->get());
-
-        //filter by both name and price
-        return inertia('test', ['query' => Product::filterByPrice(1, 5000)->where('name','like','%product%')->get()]);
-
+        return array($order, $sort);
     }
 }

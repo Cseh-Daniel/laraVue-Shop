@@ -33,56 +33,54 @@ let sort = ref(props.sort);
 watch(() => search.name,
     debounce(
         (value) => {
-            if (value != null) {
-                router.get('/home', { name: value }, { replace: true, preserveState: true });
-                // search.price.max = null;
-                // search.price.min = null;
-                // sort.value.value = '';
+            let data = getQueryData();
+            data.name = value;
+            router.get('/home', data, { replace: true, preserveState: true });
 
-            }
         }, 500));
 
 watch(() => search.price,
     debounce(
         (value) => {
-            if (value.min != null || value.max != null) {
-                router.get('/home', { price: value }, { replace: true, preserveState: true });
-                // search.name = null;
-                // sort.value.value = '';
-            }
+            let data = getQueryData();
+            data.priceMin = value['min'];
+            data.priceMax = value['max'];
+
+            router.get('/home', data, { replace: true, preserveState: true });
+            // router.get('/home', { price: value }, { replace: true, preserveState: true });
+
         }, 500), { deep: true });
+
+
+function getQueryData() {
+
+    let data = {
+        sort: null,
+        priceMin: null,
+        priceMax: null,
+        name: null
+    };
+
+    data.name = new URL(location.href).searchParams.has('name') ? new URL(location.href).searchParams.get('name') : null;
+    data.priceMin = new URL(location.href).searchParams.has('priceMin') ? new URL(location.href).searchParams.get('priceMin') : null;
+    data.priceMax = new URL(location.href).searchParams.has('priceMax') ? new URL(location.href).searchParams.get('priceMax') : null;
+    data.sort = new URL(location.href).searchParams.has('sort') ? sort.value.value : null;
+
+    console.log(data);
+
+    return data;
+
+}
 
 
 function sorter() {
 
-    let nameFilter = new URL(location.href).searchParams.has('name');
-    let priceMin = new URL(location.href).searchParams.has('price[min]');
-    let priceMax = new URL(location.href).searchParams.has('price[max]');
+    let data = getQueryData();
+    data.sort = sort.value.value;
 
-    let data = {
-        sort: sort.value.value
-    };
-
-    if (nameFilter) {
-        // router.get('/home', { sort: sortValue }, { replace: true, preserveState: true });//két kód eléggé ugyan az
-        data.name = new URL(location.href).searchParams.get('name');
-    }
-
-    if (priceMin) {
-        data.priceMin = new URL(location.href).searchParams.get('price[min]');
-    }
-
-    if (priceMax) {
-        data.priceMax = new URL(location.href).searchParams.get('price[max]');
-    }
-
-
-    console.log(data);
-
-    // router.get('/home', data, { replace: true, preserveState: true });
-
-
+    router.get('/home', data, { replace: true, preserveState: true });
 }
+
 </script>
 
 <template>
