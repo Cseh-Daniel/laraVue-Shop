@@ -92,7 +92,9 @@ function sorter() {
 </script>
 
 <template>
-    <h1>Home</h1>
+    <a href="/" class="link-dark link-underline-opacity-0">
+        <h1>Home</h1>
+    </a>
 
     <div class="container-fluid mb-4 justify-content-center">
         <div class="row justify-content-center">

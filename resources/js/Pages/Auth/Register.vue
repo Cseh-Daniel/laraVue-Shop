@@ -5,7 +5,8 @@ import { useForm } from '@inertiajs/vue3';
 let form = useForm({
     name: '',
     email: '',
-    password: ''
+    password: '',
+    password_confirmation:''
 });
 
 
@@ -56,6 +57,12 @@ export default {
                     <div v-if="form.errors.password" class="w-auto m-2">
                         <div class="p-2 badge bg-danger-subtle text-danger-emphasis" v-text="form.errors.password"></div>
                     </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password_confirmation" class="form-label">Confirm Password:</label>
+                    <input v-model="form.password_confirmation" type="password" class="form-control"
+                        name="password_confirmation" id="password_confirmation">
                 </div>
 
                 <div class="d-flex gap-3 align-items-center">
