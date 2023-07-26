@@ -53,7 +53,6 @@ watch(() => search.price,
             data.priceMax = value['max'];
 
             router.get('/home', data, { replace: true, preserveState: true });
-            // router.get('/home', { price: value }, { replace: true, preserveState: true });
 
         }, 500), { deep: true });
 
@@ -137,7 +136,8 @@ function sorter() {
                     </Button>
                     <div class="dropdown-menu container shadow">
 
-                        <CartItems v-for="cartProd in usePage().props.cart.items" :items="cartProd" />
+                        <CartItems v-for="cartProd in usePage().props.cart.items" :items="cartProd" :key="cartProd.id" />
+
                         <div class="d-flex justify-content-center">
                             <div class="w-75">
                                 <hr>
@@ -148,6 +148,7 @@ function sorter() {
 
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
